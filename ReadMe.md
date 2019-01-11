@@ -22,12 +22,13 @@
 * [Pillow](https://github.com/python-pillow/Pillow)
 * [PrettyTable](https://github.com/lmaurits/prettytable)
 * [colorama](https://github.com/tartley/colorama)
+* twilio
 
 #### 新功能
 * 新增自动url变更请求
 * 手动输入/自动识别验证码调用(调用免费接口)
 * 抢票成功邮件发送
-* 抢票成功短信发送[twilio](https://cuiqingcai.com)(短信支持，无需pip install)
+* 抢票成功短信发送[twilio](https://cuiqingcai.com)
 * 内部流程优化，新增港铁西九龙站
 * 23点-6点定时睡觉
 
