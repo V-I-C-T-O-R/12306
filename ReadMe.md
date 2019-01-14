@@ -13,6 +13,8 @@
  * 订票策略
  * 邮件配置
  * 短信配置
+ * 线程池/进程池策略
+ * IP池策略
 
 2. 执行[funckeverything.py](https://github.com/V-I-C-T-O-R/12306/blob/master/fuckeverything.py)。
 
@@ -22,24 +24,37 @@
 * [Pillow](https://github.com/python-pillow/Pillow)
 * [PrettyTable](https://github.com/lmaurits/prettytable)
 * [colorama](https://github.com/tartley/colorama)
+* twilio
+* threadpool
+* multiprocessing
 
 #### 新功能
 * 新增自动url变更请求
 * 验证码自动识别调用(调用免费接口)
 * 抢票成功邮件发送
-* 抢票成功短信发送[twilio](https://cuiqingcai.com)(短信支持，无需pip install)
+* 抢票成功短信发送[twilio](https://cuiqingcai.com)
 * 内部流程优化
+* 内部Ip池嵌入(最近ip老是被封,不得不换个策略,更改开源ip池的源码嵌入本项目),ip池已持久化到sqlite
+* sqlite数据支持
+* 多线程ip池检查支持
+* 多进程ip池检查支持
 
 #### 你可以做啥
 * 要改成多线程多进程随你咯
-* 添加代理池随你咯
+* 添加自己的代理池随你咯
 * 添加多账户支持随你咯
 * 方便个人，不为盈利
 * oh! 对了，现在是2019年了，加油！
 
-效果图如下：  
-![12306](https://github.com/V-I-C-T-O-R/12306/blob/master/1.png)
+    买个票真不容易...
+
+效果图如下：
+买票
+![12306-1](https://github.com/V-I-C-T-O-R/12306/blob/master/1.png)
+短信
+![12306-2](https://github.com/V-I-C-T-O-R/12306/blob/master/3.png)
 
 ###### 提示
 * 借鉴了[EasyTrain](https://github.com/Why8n/EasyTrain "EasyTrain")库的代码
+* 借鉴了[proxy_pool](https://github.com/jhao104/proxy_pool "proxy_pool")库的代码
 * 优化当前代码和流程

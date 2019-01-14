@@ -1,11 +1,13 @@
 import collections
 import random
 import time
+from lxml import etree
 
 import requests
 
 from conf.urls_conf import queryUrls
 from define.UserAgent import USER_AGENT
+from net import ips
 
 
 def sendLogic(func):
@@ -55,13 +57,23 @@ class EasyHttp(object):
         if 'headers' in urlInfo and urlInfo['headers']:
             EasyHttp.updateHeaders(urlInfo['headers'])
         try:
-            response = EasyHttp.__session.request(method=urlInfo['method'],
-                                                  url=urlInfo['url'],
-                                                  params=params,
-                                                  data=data,
-                                                  timeout=10,
-                                                  allow_redirects=False,
-                                                  **kwargs)
+            if ips and len(ips) == 0:
+                response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      params=params,
+                                                      data=data,
+                                                      timeout=10,
+                                                      allow_redirects=False,
+                                                      **kwargs)
+            else:
+                response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      params=params,
+                                                      data=data,
+                                                      proxies={"http": "http://{}".format(random.choice(ips))},
+                                                      timeout=10,
+                                                      allow_redirects=False,
+                                                      **kwargs)
             if response.status_code == requests.codes.ok:
                 if 'response' in urlInfo:
                     if urlInfo['response'] == 'binary':
@@ -74,6 +86,47 @@ class EasyHttp(object):
             pass
         return None
 
+    @staticmethod
+    @sendLogic
+    def getHtmlTree(url, **kwargs):
+        """
+        获取html树
+        """
+        time.sleep(1)
+        header = {'Connection': 'keep-alive',
+                  'Cache-Control': 'max-age=0',
+                  'Upgrade-Insecure-Requests': '1',
+                  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko)',
+                  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                  'Accept-Encoding': 'gzip, deflate, sdch',
+                  'Accept-Language': 'zh-CN,zh;q=0.8',
+                  }
+        try:
+            response = EasyHttp.__session.request(method='GET',
+                                       url=url,
+                                       headers=headers,
+                                       timeout=10,
+                                       allow_redirects=False,
+                                       **kwargs)
+            if response.status_code == requests.codes.ok:
+                return etree.HTML(response.text)
+        except Exception as e:
+            return None
+        return None
+
+    @staticmethod
+    @sendLogic
+    def get(url,timeout):
+        try:
+            response = EasyHttp.__session.request(method='GET',
+                                                  url=url,
+                                                  timeout=timeout,
+                                                  allow_redirects=False)
+            if response.status_code == requests.codes.ok:
+                return response.text
+        except Exception as e:
+            return None
+        return None
 
 if __name__ == '__main__':
     dic = collections.OrderedDict()

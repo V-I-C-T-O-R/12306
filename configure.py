@@ -33,6 +33,13 @@ QUERY_TICKET_REFERSH_INTERVAL = 1
 #是否自动识别验证码
 IS_AUTO_CHECK_CAPTHCA = True
 
+#是否更新ip池，默认为更新
+IS_REFASH_IP_POOL = True
+#执行检查任务的线程/进程池大小
+THREAD_POOL_SIZE = 20
+#采用多线程或多进程,默认多线程
+THREAD_OR_PROCESS = True
+
 
 mail_host = 'smtp.qq.com'
 mail_user = '******@qq.com'
