@@ -50,10 +50,11 @@
     买个票真不容易...
 
 效果图如下：
-买票
+买票  
 ![12306-1](https://github.com/V-I-C-T-O-R/12306/blob/master/1.png)
-短信
-![12306-2](https://github.com/V-I-C-T-O-R/12306/blob/master/3.png)
+
+短信  
+![sms](https://github.com/V-I-C-T-O-R/12306/blob/master/3.jpg)
 
 ###### 提示
 * 借鉴了[EasyTrain](https://github.com/Why8n/EasyTrain "EasyTrain")库的代码
