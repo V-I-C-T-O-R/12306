@@ -77,10 +77,8 @@ def working(username=USER_NAME, password=USER_PWD, id_cards=PASSENGERS_ID, day=T
 
 
 def main():
-
-    GetFreeProxy.getAllProxy(THREAD_POOL_SIZE,THREAD_OR_PROCESS,IS_REFASH_IP_POOL)
-    sqlite = Sqlite(address + 'ip.db')
-    ips_results = sqlite.query_data('select proxy_adress from ip_house')
+    GetFreeProxy.getAllProxy(THREAD_POOL_SIZE, THREAD_OR_PROCESS, IS_REFASH_IP_POOL)
+    init_ip_pool()
 
     login = Login()
     Log.v('正在登录...')
