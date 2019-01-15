@@ -27,6 +27,7 @@
 * twilio
 * threadpool
 * multiprocessing
+* lxml
 
 #### 新功能
 * 新增自动url变更请求
