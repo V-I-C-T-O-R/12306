@@ -33,8 +33,8 @@
 * 新增自动url变更请求
 * 手动输入/自动识别验证码调用(调用免费接口)
 * 抢票成功邮件发送
-* 抢票成功短信发送[twilio](https://cuiqingcai.com)
-* 内部Ip池嵌入(最近ip老是被封,不得不换个策略,更改开源ip池的源码嵌入本项目),ip池已持久化到sqlite
+* 抢票成功短信发送twilio[使用说明](https://cuiqingcai.com/5696.html)
+* 内部Ip池嵌入(最近ip老是被封，不得不换个策略，更改开源ip池的源码嵌入本项目)，ip池已持久化到sqlite
 * sqlite数据支持
 * 多线程ip池检查支持
 * 多进程ip池检查支持
