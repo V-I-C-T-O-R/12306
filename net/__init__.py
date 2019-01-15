@@ -11,4 +11,4 @@ def init_ip_pool():
     for ip in ips_results:
         ips.append(ip[0])
 
-init_ip_pool()
+# init_ip_pool()
