@@ -30,8 +30,9 @@ CHOOSE_SEATS = []
 # 刷票间隔(单位:s)
 QUERY_TICKET_REFERSH_INTERVAL = 1
 
-#是否自动识别验证码
-IS_AUTO_CHECK_CAPTHCA = True
+#选择识别验证码的方式,默认2方式
+# 1表示手动,2表示自动识别(调用第三方接口),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai账号)
+SELECT_AUTO_CHECK_CAPTHCA = 2
 
 #是否更新ip池，默认为更新
 IS_REFASH_IP_POOL = True
@@ -52,3 +53,8 @@ ACCOUNT_SID = "DC4c32222717d4daa96bf8b611fd311f66"
 AUTO_TOKEN = "6b8087bf15572c210298375641f59e6a"
 FROM_NUM = '(731) 201-9528'
 TO_NUM = '+8618098271128'
+
+#百度AI图像识别应用
+BAIDU_APP_ID = '111111086'
+BAIDU_API_KEY = 'L4NedkfjgleipGfrVM7aTiNsEr'
+BAIDU_SECRET_ID = 'ujPzd234191zH*******GGskjynZXb'

@@ -1,7 +1,7 @@
 import collections
 import random
 import time
-from lxml import etree
+from lxml import html
 
 import requests
 
@@ -12,9 +12,9 @@ from net import ips
 
 def sendLogic(func):
     def wrapper(*args, **kw):
-        for count in range(10):
+        for count in range(5):
             response = func(*args, **kw)
-            if response:
+            if response is not None:
                 return response
             else:
                 time.sleep(0.1)
@@ -57,7 +57,7 @@ class EasyHttp(object):
         if 'headers' in urlInfo and urlInfo['headers']:
             EasyHttp.updateHeaders(urlInfo['headers'])
         try:
-            if ips and len(ips) == 0:
+            if len(ips) == 0:
                 response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       params=params,
@@ -93,7 +93,7 @@ class EasyHttp(object):
         获取html树
         """
         time.sleep(1)
-        header = {'Connection': 'keep-alive',
+        headers = {'Connection': 'keep-alive',
                   'Cache-Control': 'max-age=0',
                   'Upgrade-Insecure-Requests': '1',
                   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko)',
@@ -104,12 +104,12 @@ class EasyHttp(object):
         try:
             response = EasyHttp.__session.request(method='GET',
                                        url=url,
-                                       headers=headers,
+                                       # headers=headers,
                                        timeout=10,
                                        allow_redirects=False,
                                        **kwargs)
             if response.status_code == requests.codes.ok:
-                return etree.HTML(response.text)
+                return html.etree.HTML(response.text)
         except Exception as e:
             return None
         return None

@@ -131,7 +131,7 @@ class GetFreeProxy(object):
             for page in range(1, 2):
                 page_url = url.format(page=page)
                 tree = EasyHttp.getHtmlTree(page_url)
-                if not tree:
+                if tree is None:
                     Log.w('http://www.kuaidaili.com无效')
                     return []
                 proxy_list = tree.xpath('.//table//tr')
@@ -226,7 +226,7 @@ class GetFreeProxy(object):
         for i in range(1, page_count + 1):
             url = 'http://ip.jiangxianli.com/?page={}'.format(i)
             html_tree = EasyHttp.getHtmlTree(url)
-            if not html_tree:
+            if html_tree is None:
                 Log.w('http://ip.jiangxianli.com无效')
                 return []
             tr_list = html_tree.xpath("/html/body/div[1]/div/div[1]/div[2]/table/tbody/tr")

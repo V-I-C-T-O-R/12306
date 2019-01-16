@@ -1,4 +1,4 @@
-import random
+import os
 from io import BytesIO
 
 import requests
@@ -108,9 +108,7 @@ class Captcha(object):
         return ','.join(results)
 
     # 通过第三方接口自动识别12306验证码
-    def VerifyCodeAuto(self,type=TYPE_LOGIN_NORMAL_WAY):
-        url_12305 = 'https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&'.format(
-            random.random())
+    def verifyCodeAuto(self,type=TYPE_LOGIN_NORMAL_WAY):
         try:
             response = EasyHttp.send(autoVerifyUrls['12305'])
 
@@ -137,6 +135,34 @@ class Captcha(object):
             return None, False
         return results, self._captchaAutoCheck(results)
 
+    def verifyCodeAutoByMyself(self,type=TYPE_LOGIN_NORMAL_WAY):
+        try:
+            urlInfo = loginUrls['other']['captcha'] if type == TYPE_LOGIN_OTHER_WAY else loginUrls['normal']['captcha']
+            Log.v('正在获取验证码..')
+
+            response = EasyHttp.send(urlInfo)
+            address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/image_captcha/'
+
+            byte_stream = BytesIO(response)
+            roiImg = Image.open(byte_stream)  # Image打开二进制流Byte字节流数据
+            imgByteArr = BytesIO()  # 创建一个空的Bytes对象
+            roiImg.save(imgByteArr, format='PNG')  # PNG就是图片格式，我试过换成JPG/jpg都不行
+            imgByteArr = imgByteArr.getvalue()  # 这个就是保存的二进制流
+            file_name = '1.jpg'
+            file_path = address + file_name
+            # 下面这一步只是本地测试， 可以直接把imgByteArr，当成参数上传到七牛云
+            with open(file_path, "wb") as f:
+                f.write(imgByteArr)
+
+            from train.image_captcha import cut_image
+            results = cut_image.cut_image(address,file_name)
+            results = self.__indexTransCaptchaResults(results)
+
+        except Exception as e:
+            Log.w(e)
+            return None, False
+        return results, self._captchaAutoCheck(results)
+
     #对应自动验证验证码操作
     def _captchaAutoCheck(self, results):
 
@@ -156,5 +182,6 @@ class Captcha(object):
         return verify(jsonRet)
 
 if __name__ == '__main__':
-    Captcha().VerifyCodeAuto()
+    # Captcha().VerifyCodeAuto()
+    print(Captcha().VerifyCodeAutoByMyself())
     pass

@@ -3,6 +3,8 @@ import time
 
 from conf.constant import SEAT_TYPE
 from configure import *
+from net import init_ip_pool
+from spider.get_free_proxy import GetFreeProxy
 from train.login.Login import Login
 from train.query.Query import Query
 from train.submit.Submit import Submit
@@ -11,9 +13,6 @@ from utils import Utils, deadline
 from utils.Log import Log
 from utils.email_tool import send_mail
 from utils.sms import send_sms
-from spider.get_free_proxy import GetFreeProxy
-from net import init_ip_pool
-from utils.sqllite_handle import Sqlite
 
 address = os.path.dirname(os.path.realpath(__file__)) + '/'
 
@@ -25,7 +24,7 @@ def working(username=USER_NAME, password=USER_PWD, id_cards=PASSENGERS_ID, day=T
     init_ip_pool()
     login = Login()
     Log.v('正在登录...')
-    result, msg = login.login(username, password, IS_AUTO_CHECK_CAPTHCA)
+    result, msg = login.login(username, password, SELECT_AUTO_CHECK_CAPTHCA)
     if not Utils.check(result, msg):
         Log.e(msg)
         return
@@ -82,7 +81,7 @@ def main():
 
     login = Login()
     Log.v('正在登录...')
-    result, msg = login.login(USER_NAME, USER_PWD, IS_AUTO_CHECK_CAPTHCA)
+    result, msg = login.login(USER_NAME, USER_PWD, SELECT_AUTO_CHECK_CAPTHCA)
     if not Utils.check(result, msg):
         Log.e(msg)
         return
