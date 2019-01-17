@@ -1,8 +1,10 @@
 import cv2
 import os
-from configure import BAIDU_API_KEY,BAIDU_APP_ID,BAIDU_SECRET_ID
+from configure import BAIDU_API_KEY,BAIDU_APP_ID,BAIDU_SECRET_ID,TENCENT_APP_ID,TENCENT_SECRET_KEY,IMAGE_OCR_SERVICE_CHOOSE
 import skimage
 import numpy as np
+from conf.constant import IMAGE_OCR_SERVICE_BAIDU,IMAGE_OCR_SERVICE_TENCENT
+from train.image_captcha.tencent import TencentAI
 from utils.Log import Log
 #opencv-python模块
 #scikit-image
@@ -87,10 +89,15 @@ def cut_image(dir_address,img_name):
         num += 1
         write_image(sub_im, os.path.join(all_pic, sub_img_name))
 
-    #开始验证图片
+    #开始验证图片百度/Tencent
+    if IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_BAIDU:
+        image = ImageClassify(BAIDU_APP_ID, BAIDU_API_KEY, BAIDU_SECRET_ID)
+        captcha_name = image.resolve_words(os.path.join(all_pic, img_name)) or ''
+        pass
+    elif IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_TENCENT:
+        image = TencentAI(TENCENT_APP_ID, TENCENT_SECRET_KEY)
+        captcha_name = image.resolve_words(os.path.join(all_pic, img_name)) or ''
 
-    image = ImageClassify(BAIDU_APP_ID,BAIDU_API_KEY,BAIDU_SECRET_ID)
-    captcha_name = image.resolve_words(os.path.join(all_pic, img_name))
     flag_name = set(captcha_name)
     Log.w('找出:'+captcha_name)
     img_list = sorted(os.listdir(all_pic))
@@ -100,12 +107,18 @@ def cut_image(dir_address,img_name):
             continue
         c_path = os.path.join(all_pic, i)
         index = int(i.split('.')[0].split('_')[1])-1
-        resolve_name = image.resolve_image(c_path)
+        if IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_BAIDU:
+            resolve_name = image.resolve_image(c_path) or ''
+            pass
+        elif IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_TENCENT:
+            resolve_name = image.resolve_image(os.path.join(all_pic, img_name)) or ''
+
         Log.w('第'+str(index)+'图片识别为:'+resolve_name)
         variable_name = set(resolve_name)
         if flag_name.intersection(variable_name):
             results.append(str(index))
-    remove_pic(dir_address,img_name)
+    #内测阶段,不删除文件
+    # remove_pic(dir_address,img_name)
     Log.w('结果集是：'+','.join(results))
     return ','.join(results)
 

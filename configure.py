@@ -28,14 +28,16 @@ PASSENGER_TYPE_CODE = '1'
 CHOOSE_SEATS = []
 
 # 刷票间隔(单位:s)
-QUERY_TICKET_REFERSH_INTERVAL = 1
+QUERY_TICKET_REFERSH_INTERVAL = 2
 
 #选择识别验证码的方式,默认2方式
-# 1表示手动,2表示自动识别(调用第三方接口),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai账号)
-SELECT_AUTO_CHECK_CAPTHCA = 2
+# 1表示手动,2表示自动识别(调用第三方接口),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai/tencent ai账号)
+SELECT_AUTO_CHECK_CAPTHCA = 3
+#baidu/tencent选择,此参数只在SELECT_AUTO_CHECK_CAPTHCA = 3的情况下有效,默认为百度服务
+IMAGE_OCR_SERVICE_CHOOSE = 1
 
-#是否更新ip池，默认为更新
-IS_REFASH_IP_POOL = True
+#是否更新ip池，默认为不更新
+IS_REFASH_IP_POOL = False
 #执行检查任务的线程/进程池大小
 THREAD_POOL_SIZE = 20
 #采用多线程或多进程,默认多线程
@@ -58,3 +60,7 @@ TO_NUM = '+8618098271128'
 BAIDU_APP_ID = '111111086'
 BAIDU_API_KEY = 'L4NedkfjgleipGfrVM7aTiNsEr'
 BAIDU_SECRET_ID = 'ujPzd234191zH*******GGskjynZXb'
+
+#腾讯地址https://ai.qq.com/product/visionimgidy.shtml#scene坑的想哭,腾讯有两套系统,账号不互通
+TENCENT_APP_ID = '31144562600'
+TENCENT_SECRET_KEY = 'KzvJf8rjdus5MVLt'
