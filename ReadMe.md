@@ -7,7 +7,7 @@
 * 这是一款[12306](http://www.12306.cn/)自动抢票开源工具基础上优化更改的捡漏器
 
 #### Usage
-1. pip install -r requirements.txt安装所有依赖
+1. pip install -r requirements.txt安装所有依赖(Python3)
 
 2. 在[configure.py](https://github.com/V-I-C-T-O-R/12306/blob/master/configure.py)中配置信息：
  * 身份信息
