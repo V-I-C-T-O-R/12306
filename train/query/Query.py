@@ -206,4 +206,4 @@ class Query(object):
 if __name__ == "__main__":
     # for ticket in Query.query('2017-12-31', '深圳北', '潮汕'):
     #     print(ticket)
-    Query.outputPretty('2019-02-01', '沙坪坝', '武汉')
+    Query.outputPretty('2019-02-01', '沙坪坝', '兰州')
