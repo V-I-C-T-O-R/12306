@@ -378,7 +378,7 @@ class GetFreeProxy(object):
     def exec_multi_process(size, proxys):
         pool = multiprocessing.Pool(processes=size)
         for proxy in proxys:
-            pool.apply_async(GetFreeProxy.validUsefulProxy, proxy)
+            pool.apply_async(GetFreeProxy.validUsefulProxy, (proxy,))
 
         pool.close()
         pool.join()
