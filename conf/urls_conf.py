@@ -144,20 +144,19 @@ autoVerifyUrls = {
         'method':'GET'
     },
     'api':{
-        'url':'http://60.205.200.159/api',
+        'url':'https://12306.jiedanba.cn/api/v2/getCheck',
         'method':'POST',
-    'headers': {
-                r'Content-Type': r'application/json',
-            }
+        'headers': {'Content-Type': 'application/json'}
     },
     'img_url':{
-        'url':'http://check.huochepiao.360.cn/img_vcode',
+        'url':'https://check.huochepiao.360.cn/img_vcode',
         'method':'POST'
     },
     'check_url':{
         'url':'https://kyfw.12306.cn/passport/captcha/captcha-check',
         'method':'GET'
-    }
+    },
+    "origin_url":"https://12306.jiedanba.cn/"
 }
 
 queryUrls = {
