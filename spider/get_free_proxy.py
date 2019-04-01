@@ -38,7 +38,7 @@ class GetFreeProxy(object):
             for i in range(1, page + 1):
                 url = "http://www.66ip.cn/areaindex_{}/{}.html".format(area_index, i)
                 html_tree = EasyHttp.getHtmlTree(url)
-                if not html_tree:
+                if html_tree is None:
                     Log.w('http://www.66ip.cn无效')
                     return []
                 tr_list = html_tree.xpath("//*[@id='footer']/div/table/tr[position()>1]")
@@ -80,7 +80,7 @@ class GetFreeProxy(object):
         """
         url = "http://www.goubanjia.com/"
         tree = EasyHttp.getHtmlTree(url)
-        if not tree:
+        if tree is None:
             Log.w('http://www.goubanjia.com无效')
             return []
         proxy_list = tree.xpath('//td[@class="ip"]')
@@ -314,7 +314,7 @@ class GetFreeProxy(object):
             flag = False
         if not flag:
             sqlite = Sqlite(address + 'ip.db')
-            sqlite.update_data('delete * from ip_house where id = {}'.format(marks[0]))
+            sqlite.update_data('delete from ip_house where id = {}'.format(marks[0]))
 
     @staticmethod
     def getAllProxy(pool_size=10,thread_or_process=True,is_refash=True):
