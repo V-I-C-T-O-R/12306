@@ -1,4 +1,4 @@
-
+from utils.Log import Log
 ips = []
 
 def init_ip_pool():
@@ -10,5 +10,6 @@ def init_ip_pool():
     ips_results = sqlite.query_data('select proxy_adress from ip_house')
     for ip in ips_results:
         ips.append(ip[0])
+    Log.v('有效ip代理数量：' + str(len(ips_results)))
 
 # init_ip_pool()

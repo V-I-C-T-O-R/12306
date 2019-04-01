@@ -315,6 +315,7 @@ class GetFreeProxy(object):
         if not flag:
             sqlite = Sqlite(address + 'ip.db')
             sqlite.update_data('delete from ip_house where id = {}'.format(marks[0]))
+            Log.d("删除无效代理:" + marks[1])
 
     @staticmethod
     def getAllProxy(pool_size=10,thread_or_process=True,is_refash=True):
@@ -349,6 +350,7 @@ class GetFreeProxy(object):
         for result in results:
             param = str(result[0]) + '&&' + result[1]
             params.append(param)
+        Log.v("发现ip代理数量:" + str(len(params)))
         Log.v('正在检查ip可用性...')
         if thread_or_process:
             GetFreeProxy.exec_multi_threading(pool_size,params)
