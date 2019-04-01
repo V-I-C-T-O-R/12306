@@ -324,6 +324,7 @@ class GetFreeProxy(object):
         # address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/'
         if is_refash:
             proxys = GetFreeProxy.get_list_proxys()
+            proxys = list(set(proxys))
             sqlite = Sqlite(address + 'ip.db')
             sqlite.update_data('DELETE FROM ip_house')
             sqlite = Sqlite(address + 'ip.db')
@@ -337,6 +338,7 @@ class GetFreeProxy(object):
             results = sqlite.query_data('select count(proxy_adress) from ip_house')
             if int(results[0][0]) == 0:
                 proxys = GetFreeProxy.get_list_proxys()
+                proxys = list(set(proxys))
                 sqlite = Sqlite(address + 'ip.db')
                 for i in range(len(proxys)):
                     if proxys[i] and GetFreeProxy.verifyProxyFormat(proxys[i]):
