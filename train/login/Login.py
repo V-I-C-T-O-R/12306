@@ -43,11 +43,21 @@ class Login(object):
         jsonRet = EasyHttp.send(self._urlInfo['uamtk'], data={'appid': 'otn'})
 
         def isSuccess(response):
-            return response['result_code'] == 0 if 'result_code' in response else False
+            return response['result_code'] == 0 if response and 'result_code' in response else False
 
         return isSuccess(jsonRet), \
                jsonRet['result_message'] if 'result_message' in jsonRet else 'no result_message', \
                jsonRet['newapptk'] if 'newapptk' in jsonRet else 'no newapptk'
+
+    def _uamtk_static(self):
+        jsonRet = EasyHttp.send(self._urlInfo['uamtk-static'], data={'appid': 'otn'})
+
+        def isSuccess(response):
+            return response['result_code'] == 0 if response and 'result_code' in response else False
+
+        return isSuccess(jsonRet), \
+               jsonRet['result_message'] if jsonRet and 'result_message' in jsonRet else 'no result_message', \
+               jsonRet['newapptk'] if jsonRet and 'newapptk' in jsonRet else 'no newapptk'
 
     def _uamauthclient(self, apptk):
         jsonRet = EasyHttp.send(self._urlInfo['uamauthclient'], data={'tk': apptk})
@@ -80,18 +90,20 @@ class Login(object):
         self._init()
         self._uamtk()
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
-            if not Captcha().verifyCodeAuto()[1]:
-                return False, '验证码识别错误!'
+            results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            if not Captcha().verifyCaptchaByHand()[1]:
-                return False, '验证码识别错误!'
+            results, verify = Captcha().verifyCaptchaByHand()
         else:
-            if not Captcha().verifyCodeAutoByMyself()[1]:
-                return False, '验证码识别错误!'
+            results, verify = Captcha().verifyCodeAutoByMyself()
+
+        if not verify:
+            return False, '验证码识别错误!'
+        Log.v('验证码识别成功')
         payload = {
             'username': userName,
             'password': userPwd,
             'appid': 'otn',
+            'answer': results
         }
         jsonRet = EasyHttp.send(self._urlInfo['login'], data=payload)
 
@@ -113,13 +125,14 @@ class Login(object):
     def _loginAsyncSuggest(self, userName, userPwd, autoCheck=2):
         self._init()
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
-            results, verify = Captcha().verifyCodeAuto(type=TYPE_LOGIN_OTHER_WAY)
+            results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            results, verify = Captcha().verifyCaptchaByHand(type=TYPE_LOGIN_OTHER_WAY)
+            results, verify = Captcha().verifyCaptchaByHand()
         else:
-            results, verify = Captcha().verifyCodeAutoByMyself(type=TYPE_LOGIN_OTHER_WAY)
+            results, verify = Captcha().verifyCodeAutoByMyself()
         if not verify:
             return False, '验证码识别错误!'
+        Log.v('验证码识别成功')
         formData = {
             'loginUserDTO.user_name': userName,
             'userDTO.password': userPwd,
@@ -129,11 +142,11 @@ class Login(object):
         # print('loginAsyncSuggest: %s' % jsonRet)
 
         def isSuccess(response):
-            return response['status'] and response['data']['loginCheck'] == 'Y' if 'data' in response else False, \
-                   response['data']['otherMsg'] if 'data' in response else response['messages']
+            return response['status'] and response['data'].get('loginCheck') == 'Y' if 'data' in response else False, \
+                   response['data'].get('otherMsg') if 'data' in response else response['messages']
 
         loginSuccess, otherMsg = isSuccess(jsonRet)
-        return loginSuccess, '%s:%s' % (userName, otherMsg or '登录成功!')
+        return loginSuccess, '%s:%s' % (userName, '登录成功' if loginSuccess else '登录失败')
 
     def isLogin(self):
         formData = {

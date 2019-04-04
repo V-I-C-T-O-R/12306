@@ -27,6 +27,10 @@ class EasyHttp(object):
     __session = requests.Session()
 
     @staticmethod
+    def get_session():
+        return EasyHttp.__session
+
+    @staticmethod
     def updateHeaders(headers):
         EasyHttp.__session.headers.update(headers)
 
@@ -127,6 +131,19 @@ class EasyHttp(object):
         except Exception as e:
             return None
         return None
+
+    @staticmethod
+    @sendLogic
+    def get_custom(urlInfo):
+        try:
+            response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      timeout=10,
+                                                      allow_redirects=False
+                                                    )
+        except Exception as e:
+            return None
+        return response
 
 if __name__ == '__main__':
     dic = collections.OrderedDict()

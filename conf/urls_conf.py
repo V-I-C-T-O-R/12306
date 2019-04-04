@@ -19,6 +19,14 @@ loginUrls = {
                 'Referer': r'https://kyfw.12306.cn/otn/passport?redirect=/otn/login/userLogin',
             }
         },
+        'uamtk-static':{
+            'url': r'https://kyfw.12306.cn/passport/web/auth/uamtk-static',
+            'method': 'POST',
+            'headers': {
+                r'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
+                'Referer': r'https://kyfw.12306.cn/otn/resources/login.html',
+            }
+        },
         'captcha': {
             'url': r'https://kyfw.12306.cn/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&{}'
                 .format(random.random()),
@@ -38,8 +46,9 @@ loginUrls = {
             'method': 'POST',
             'headers': {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-                'X-Requested-With': 'xmlHttpRequest',
-                'Referer': 'https://kyfw.12306.cn/otn/login/init',
+                'Referer': 'https://kyfw.12306.cn/otn/resources/login.html',
+                'Accept' : 'application/json, text/javascript, */*; q=0.01',
+                'Origin':'https://kyfw.12306.cn'
             }
         },
         'userLogin': {
@@ -55,6 +64,8 @@ loginUrls = {
             'url': r'https://kyfw.12306.cn/otn/passport?redirect=/otn/login/userLogin',
             'method': 'GET',
             'response': 'html',
+            'Upgrade-Insecure-Requests':'1',
+            'Referer': 'https://kyfw.12306.cn/otn/resources/login.html'
         },
         'uamauthclient': {
             'url': r'https://kyfw.12306.cn/otn/uamauthclient',

@@ -108,7 +108,7 @@ class Captcha(object):
         return ','.join(results)
 
     # 通过第三方接口自动识别12306验证码
-    def verifyCodeAuto(self,type=TYPE_LOGIN_NORMAL_WAY):
+    def verifyCodeAuto(self):
         try:
             response = EasyHttp.send(autoVerifyUrls['12305'])
 
@@ -175,11 +175,9 @@ class Captcha(object):
         }
         jsonRet = EasyHttp.send(autoVerifyUrls['check_url'],params=params)
 
-        # print('captchaCheck: %s' % jsonRet)
-
+        # Log.d('验证码识别结果: %s' % jsonRet if jsonRet else 'None')
         def verify(response):
-            return Captcha.__REPONSE_NORMAL_CDOE_SUCCESSFUL == response[
-                'result_code'] if 'result_code' in response else False
+            return Captcha.__REPONSE_NORMAL_CDOE_SUCCESSFUL == response['result_code'] if response and 'result_code' in response else False
 
         return verify(jsonRet)
 
