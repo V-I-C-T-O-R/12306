@@ -74,7 +74,6 @@ def working(username=USER_NAME, password=USER_PWD, id_cards=PASSENGERS_ID, day=T
             Log.w("提交操作异常：" + e)
     print(login.loginOut())
 
-
 def main():
     GetFreeProxy.getAllProxy(THREAD_POOL_SIZE, THREAD_OR_PROCESS, IS_REFASH_IP_POOL)
     init_ip_pool()

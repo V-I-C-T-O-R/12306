@@ -1,11 +1,13 @@
 import multiprocessing
 import os
 import re
-from utils.Log import Log
+
 import requests
 import threadpool
+from bs4 import BeautifulSoup
 
 from net.NetUtils import EasyHttp
+from utils.Log import Log
 from utils.sqllite_handle import Sqlite
 
 requests.packages.urllib3.disable_warnings()
@@ -24,7 +26,6 @@ address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/'
 
 
 class GetFreeProxy(object):
-
     @staticmethod
     def freeProxySecond(area=33, page=1):
         """
@@ -107,7 +108,7 @@ class GetFreeProxy(object):
         :return:
         """
         url = 'http://www.xdaili.cn/ipagent/freeip/getFreeIps?page=1&rows=10'
-        
+
         try:
             res = EasyHttp.get(url, timeout=10).json()
             if not res or not res['RESULT'] or not res['RESULT']['rows']:
@@ -148,7 +149,6 @@ class GetFreeProxy(object):
         url_gntou = ['http://www.mimiip.com/gntou/%s' % n for n in range(1, 2)]  # 国内透明
         url_list = url_gngao + url_gnpu + url_gntou
 
-        
         for url in url_list:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -165,7 +165,7 @@ class GetFreeProxy(object):
         :return:
         """
         urls = ['https://proxy.coderbusy.com/classical/country/cn.aspx?page=1']
-        
+
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -182,7 +182,7 @@ class GetFreeProxy(object):
         :return:
         """
         urls = ['http://www.ip3366.net/free/']
-        
+
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -204,7 +204,7 @@ class GetFreeProxy(object):
             'http://www.iphai.com/free/wg',
             'http://www.iphai.com/free/wp'
         ]
-        
+
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -242,7 +242,7 @@ class GetFreeProxy(object):
         :return:
         """
         urls = ['http://cn-proxy.com/', 'http://cn-proxy.com/archives/218']
-        
+
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -259,7 +259,7 @@ class GetFreeProxy(object):
         :return:
         """
         urls = ['https://proxy-list.org/english/index.php?p=%s' % n for n in range(1, 10)]
-        
+
         import base64
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
@@ -273,7 +273,7 @@ class GetFreeProxy(object):
     @staticmethod
     def freeProxyWallThird():
         urls = ['https://list.proxylistplus.com/Fresh-HTTP-Proxy-List-1']
-        
+
         for url in urls:
             r = EasyHttp.get(url, timeout=10)
             if not r:
@@ -302,23 +302,27 @@ class GetFreeProxy(object):
         marks = params.split('&&')
         if isinstance(marks[1], bytes):
             marks[1] = marks[1].decode('utf8')
-        proxies = {"http": "http://{proxy}".format(proxy=marks[1])}
+        if 'HTTP' == marks[2]:
+            proxies = {"http": "http://{proxy}".format(proxy=marks[1])}
+        else:
+            proxies = {"https": "https://{proxy}".format(proxy=marks[1])}
         flag = None
         try:
-            # 超过20秒的代理就不要了
+            # 超过10秒的代理就不要了
             r = requests.get('http://httpbin.org/ip', proxies=proxies, timeout=10, verify=False)
             if r.status_code == 200 and r.json().get("origin"):
-                # logger.info('%s is ok' % proxy)
+                # print('请求IP:'+r.json().get("origin")+', 代理为:'+json.dumps(proxies))
+                Log.v('有效代理:' + marks[1])
                 flag = True
         except Exception as e:
             flag = False
         if not flag:
             sqlite = Sqlite(address + 'ip.db')
             sqlite.update_data('delete from ip_house where id = {}'.format(marks[0]))
-            Log.d("删除无效代理:" + marks[1])
+            Log.d("无效代理:" + marks[1])
 
     @staticmethod
-    def getAllProxy(pool_size=10,thread_or_process=True,is_refash=True):
+    def getAllProxy(pool_size=10, thread_or_process=True, is_refash=True):
 
         Log.v('正在更新ip池,请稍后...')
         # address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/'
@@ -330,9 +334,11 @@ class GetFreeProxy(object):
             sqlite = Sqlite(address + 'ip.db')
             for i in range(len(proxys)):
                 if proxys[i] and GetFreeProxy.verifyProxyFormat(proxys[i]):
-                    sqlite.cursor.execute("INSERT INTO ip_house VALUES (?,?,?);", [i+1,proxys[i],'true'])
+                    sqlite.cursor.execute("INSERT INTO ip_house VALUES (?,?,?,?);", [i + 1, proxys[i], 'HTTP', 'true'])
             sqlite.conn.commit()
             sqlite.close_conn()
+
+            GetFreeProxy.get_proxys_by_website()
         else:
             sqlite = Sqlite(address + 'ip.db')
             results = sqlite.query_data('select count(proxy_adress) from ip_house')
@@ -342,41 +348,110 @@ class GetFreeProxy(object):
                 sqlite = Sqlite(address + 'ip.db')
                 for i in range(len(proxys)):
                     if proxys[i] and GetFreeProxy.verifyProxyFormat(proxys[i]):
-                        sqlite.cursor.execute("INSERT INTO ip_house VALUES (?,?,?);", [i + 1, proxys[i], 'true'])
+                        sqlite.cursor.execute("INSERT INTO ip_house VALUES (?,?,?,?);",
+                                              [i + 1, proxys[i], 'HTTP', 'true'])
                 sqlite.conn.commit()
                 sqlite.close_conn()
+                GetFreeProxy.get_proxys_by_website()
 
         sqlite = Sqlite(address + 'ip.db')
-        results = sqlite.query_data('select id,proxy_adress from ip_house')
+        results = sqlite.query_data('select id,proxy_adress,type from ip_house')
         params = []
         for result in results:
-            param = str(result[0]) + '&&' + result[1]
+            param = str(result[0]) + '&&' + result[1] + '&&' + result[2]
             params.append(param)
         Log.v("发现ip代理数量:" + str(len(params)))
         Log.v('正在检查ip可用性...')
         if thread_or_process:
-            GetFreeProxy.exec_multi_threading(pool_size,params)
+            GetFreeProxy.exec_multi_threading(pool_size, params)
         else:
-            GetFreeProxy.exec_multi_process(pool_size,params)
+            GetFreeProxy.exec_multi_process(pool_size, params)
         Log.v('更新完成')
 
     @staticmethod
     def get_list_proxys():
         proxys = []
         proxys.extend(GetFreeProxy.freeProxySecond())
-        proxys.extend(GetFreeProxy.freeProxyFourth())
-        proxys.extend(GetFreeProxy.freeProxyFifth())
+        # proxys.extend(GetFreeProxy.freeProxyFourth()) 无效
+        # proxys.extend(GetFreeProxy.freeProxyFifth()) 无效
         proxys.extend(GetFreeProxy.freeProxySixth())
         proxys.extend(GetFreeProxy.freeProxySeventh())
-        proxys.extend(GetFreeProxy.freeProxyEight())
-        proxys.extend(GetFreeProxy.freeProxyNinth())
+        # proxys.extend(GetFreeProxy.freeProxyEight()) 无效
+        # proxys.extend(GetFreeProxy.freeProxyNinth()) 无效
         proxys.extend(GetFreeProxy.freeProxyTen())
         proxys.extend(GetFreeProxy.freeProxyEleven())
-        proxys.extend(GetFreeProxy.freeProxyTwelve())
-        proxys.extend(GetFreeProxy.freeProxyWallFirst())
-        proxys.extend(GetFreeProxy.freeProxyWallSecond())
+        # proxys.extend(GetFreeProxy.freeProxyTwelve()) 无效
+        # proxys.extend(GetFreeProxy.freeProxyWallFirst()) 无效
+        # proxys.extend(GetFreeProxy.freeProxyWallSecond()) 无效
         proxys.extend(GetFreeProxy.freeProxyWallThird())
         return proxys
+
+    # 通过收集https://www.xicidaili.com/nn/1的ip信息来查询代理
+    @staticmethod
+    def get_proxys_by_website():
+        import time
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Upgrade-Insecure-Requests': '1',
+            'Host': 'www.xicidaili.com',
+            'Pragma': 'no-cache',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache',
+            'Accept-Language': 'zh-CN,zh;q=0.9'
+        }
+        response = requests.get('https://www.xicidaili.com/nn/1', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list = []
+        trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/nt/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/wn/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/wt/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
+
+        proxys = []
+        for i in range(1, len(trs_list)):
+            tds = trs_list[i].find_all('td')
+            ip = tds[1].get_text()
+            port = tds[2].get_text()
+            type = str(tds[5].get_text()).strip(' ')
+            date_time = str(tds[9].get_text()).split(' ')[0]
+            now = time.strftime("%y-%m-%d", time.localtime())
+            # if date_time == now:
+            proxys.append(ip + ":" + port + '&' + type)
+
+        proxys = list(set(proxys))
+        sqlite = Sqlite(address + 'ip.db')
+        results = sqlite.query_data('select count(proxy_adress) from ip_house')
+        sqlite = Sqlite(address + 'ip.db')
+        num = int(results[0][0])
+        for i in range(len(proxys)):
+            paras = proxys[i].split('&')
+            if paras[0] and GetFreeProxy.verifyProxyFormat(paras[0]):
+                sqlite.cursor.execute("INSERT INTO ip_house VALUES (?,?,?,?);",
+                                      [num + i, paras[0], paras[1], 'true'])
+        sqlite.conn.commit()
+        sqlite.close_conn()
 
     @staticmethod
     def exec_multi_process(size, proxys):
@@ -396,7 +471,7 @@ class GetFreeProxy(object):
         pool.wait()
 
 
-
 if __name__ == '__main__':
-    GetFreeProxy.getAllProxy()
+    # GetFreeProxy.getAllProxy()
+    GetFreeProxy.get_proxys_by_website()
     pass

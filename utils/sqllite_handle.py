@@ -58,12 +58,12 @@ if __name__ == '__main__':
     address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/'
     sqlite = Sqlite(address + 'ip.db')
 
-    # sqlite.create_table(
-    #     'create table ip_house(id INT,proxy_adress TEXT,flag TEXT)')
+    sqlite.create_table(
+        'create table ip_house(id INT,proxy_adress TEXT,type TEXT,flag TEXT)')
     # # # sqlite.cursor.execute('''DELETE FROM ftx_house''')
-    # sqlite.cursor.execute('''drop table ftx_house''')
+    # sqlite.cursor.execute('''drop table ip_house''')
     # sqlite.conn.commit()
-    print(sqlite.query_data('select proxy_adress from ip_house'))
+    # print(sqlite.query_data('select proxy_adress from ip_house'))
     # with open('/home/wenhuanhuan/Downloads/sales_part_tab(new).csv') as f:
     #     reader = csv.reader(f)
     #     for field in reader:

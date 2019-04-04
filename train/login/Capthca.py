@@ -64,7 +64,7 @@ class Captcha(object):
             return None
         results = damatuWeb.verify(Captcha.__CAPTCHA_PATH)
         results = self.__cloundTransCaptchaResults(results)
-        Log.v('captchaResult: %s' % results)
+        Log.v('验证码坐标: %s' % results)
         return results, self.check(results)
 
     # 通过人眼手动识别12306验证码
@@ -87,7 +87,7 @@ class Captcha(object):
             if img is not None:
                 img.close()
         results = self.__indexTransCaptchaResults(results)
-        Log.v('captchaResult: %s' % results)
+        Log.v('验证码坐标: %s' % results)
         return results, self.check(results, type)
 
     def __indexTransCaptchaResults(self, indexes, sep=r','):

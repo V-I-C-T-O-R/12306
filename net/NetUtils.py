@@ -70,7 +70,7 @@ class EasyHttp(object):
                                                       url=urlInfo['url'],
                                                       params=params,
                                                       data=data,
-                                                      proxies={"http": "http://{}".format(random.choice(ips))},
+                                                      proxies={"https": "https://{}".format(random.choice(ips)[0])} if random.choice(ips)[1] == 'HTTPS' else {"http": "http://{}".format(random.choice(ips)[0])},
                                                       timeout=10,
                                                       allow_redirects=False,
                                                       **kwargs)

@@ -98,7 +98,7 @@ class Login(object):
         def isLoginSuccess(responseJson):
             return 0 == responseJson['result_code'] if responseJson and 'result_code' in responseJson else False, \
                    responseJson[
-                       'result_message'] if responseJson and 'result_message' in responseJson else 'login failed'
+                       'result_message'] if responseJson and 'result_message' in responseJson else '登录失败'
 
         result, msg = isLoginSuccess(jsonRet)
         if not result:
