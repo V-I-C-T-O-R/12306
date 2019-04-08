@@ -74,7 +74,7 @@ class EasyHttp(object):
                                                       url=urlInfo['url'],
                                                       params=params,
                                                       data=data,
-                                                      proxies={"https": "https://{}".format(random.choice(ips)[0])} if random.choice(ips)[1] == 'HTTPS' else {"http": "http://{}".format(random.choice(ips)[0])},
+                                                      proxies={"https": "https://{}".format(random.choice(ips)[0]),"http": "http://{}".format(random.choice(ips)[0])},
                                                       timeout=10,
                                                       allow_redirects=False,
                                                       **kwargs)
@@ -141,6 +141,31 @@ class EasyHttp(object):
                                                       timeout=10,
                                                       allow_redirects=False
                                                     )
+        except Exception as e:
+            return None
+        return response
+
+    @staticmethod
+    @sendLogic
+    def post_custom(urlInfo,data):
+        EasyHttp.resetHeaders()
+        if 'headers' in urlInfo and urlInfo['headers']:
+            EasyHttp.updateHeaders(urlInfo['headers'])
+        try:
+            if len(ips) == 0:
+                response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      data=data,
+                                                      timeout=10,
+                                                      allow_redirects=False)
+            else:
+                response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      data=data,
+                                                      proxies={"https": "https://{}".format(random.choice(ips)[0]),
+                                                               "http": "http://{}".format(random.choice(ips)[0])},
+                                                      timeout=10,
+                                                      allow_redirects=False)
         except Exception as e:
             return None
         return response

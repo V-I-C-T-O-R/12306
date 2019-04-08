@@ -1,4 +1,7 @@
+import copy
+import json
 import time
+from collections import OrderedDict
 
 from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
 from conf.urls_conf import loginUrls
@@ -46,8 +49,8 @@ class Login(object):
             return response['result_code'] == 0 if response and 'result_code' in response else False
 
         return isSuccess(jsonRet), \
-               jsonRet['result_message'] if 'result_message' in jsonRet else 'no result_message', \
-               jsonRet['newapptk'] if 'newapptk' in jsonRet else 'no newapptk'
+               jsonRet['result_message'] if jsonRet and 'result_message' in jsonRet else 'no result_message', \
+               jsonRet['newapptk'] if jsonRet and 'newapptk' in jsonRet else 'no newapptk'
 
     def _uamtk_static(self):
         jsonRet = EasyHttp.send(self._urlInfo['uamtk-static'], data={'appid': 'otn'})
@@ -87,8 +90,10 @@ class Login(object):
         return self._loginNormal(userName, userPwd,autoCheck)
 
     def _loginNormal(self, userName, userPwd, autoCheck=2):
-        self._init()
-        self._uamtk()
+        status,msg = self._login_init()
+        if not status:
+            return status, msg
+        self._uamtk_static()
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
             results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
@@ -99,12 +104,12 @@ class Login(object):
         if not verify:
             return False, '验证码识别错误!'
         Log.v('验证码识别成功')
-        payload = {
-            'username': userName,
-            'password': userPwd,
-            'appid': 'otn',
-            'answer': results
-        }
+        payload = OrderedDict()
+        payload['username'] = userName
+        payload['password'] = userPwd
+        payload['appid'] = 'otn'
+        payload['answer'] = results
+
         jsonRet = EasyHttp.send(self._urlInfo['login'], data=payload)
 
         def isLoginSuccess(responseJson):
@@ -133,11 +138,11 @@ class Login(object):
         if not verify:
             return False, '验证码识别错误!'
         Log.v('验证码识别成功')
-        formData = {
-            'loginUserDTO.user_name': userName,
-            'userDTO.password': userPwd,
-            'randCode': results,
-        }
+        formData = OrderedDict()
+        formData['loginUserDTO.user_name'] = userName
+        formData['userDTO.password'] = userPwd
+        formData['randCode'] = results
+
         jsonRet = EasyHttp.send(self._urlInfo['login'], data=formData)
         # print('loginAsyncSuggest: %s' % jsonRet)
 
@@ -165,9 +170,31 @@ class Login(object):
     def _init(self):
         EasyHttp.send(self._urlInfo['init'])
 
+    def _login_init(self):
+        EasyHttp.send(self._urlInfo['loginInit'])
+        devices_id_rsp = EasyHttp.get_custom(self._urlInfo["getDevicesId"])
+        if devices_id_rsp:
+            callback = devices_id_rsp.text.replace("callbackFunction('", '').replace("')", '')
+            text = json.loads(callback)
+            devices_id = text.get('dfp')
+            exp = text.get('exp')
+            EasyHttp.setCookies(RAIL_DEVICEID=devices_id,RAIL_EXPIRATION=exp)
+            # Log.d('设备Id：%s'%devices_id)
+            return True,'获取设备指纹成功'
+        return False,'获取设备指纹失败'
+
 
 if __name__ == '__main__':
-    login = Login()
-    login.login(USER_NAME, USER_PWD)
-    time.sleep(3)
-    print(login.loginOut())
+    # login = Login()
+    # login.login(USER_NAME, USER_PWD)
+    # time.sleep(3)
+    # print(login.loginOut())
+    from conf.urls_conf import loginUrls
+    devicesIdUrl = copy.deepcopy(loginUrls['normal']["getDevicesId"])
+    devices_id_rsp = EasyHttp.get_custom(devicesIdUrl)
+    print(devices_id_rsp.text)
+    text = devices_id_rsp.text.replace("callbackFunction('",'').replace("')",'')
+    print(text)
+    j = json.loads(text)
+    print(j['exp'])
+    pass

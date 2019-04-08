@@ -308,8 +308,8 @@ class GetFreeProxy(object):
             proxies = {"https": "https://{proxy}".format(proxy=marks[1])}
         flag = None
         try:
-            # 超过10秒的代理就不要了
-            r = requests.get('http://httpbin.org/ip', proxies=proxies, timeout=10, verify=False)
+            # 超过3秒的代理就不要了
+            r = requests.get('http://httpbin.org/ip', proxies=proxies, timeout=3, verify=False)
             if r.status_code == 200 and r.json().get("origin"):
                 # print('请求IP:'+r.json().get("origin")+', 代理为:'+json.dumps(proxies))
                 Log.v('有效代理:' + marks[1])
@@ -407,30 +407,30 @@ class GetFreeProxy(object):
         trs = table.find_all('tr')
         trs_list = []
         trs_list.extend(trs[1:])
-        time.sleep(1)
-        response = requests.get('https://www.xicidaili.com/nt/', headers=headers, timeout=20)
-        html = BeautifulSoup(response.text, 'html.parser')
-
-        table = html.find('table', attrs={'id': 'ip_list'})
-        trs = table.find_all('tr')
-        trs_list.extend(trs[1:])
-        time.sleep(1)
-        response = requests.get('https://www.xicidaili.com/wn/', headers=headers, timeout=20)
-        html = BeautifulSoup(response.text, 'html.parser')
-
-        table = html.find('table', attrs={'id': 'ip_list'})
-        trs = table.find_all('tr')
-        trs_list.extend(trs[1:])
-        time.sleep(1)
-        response = requests.get('https://www.xicidaili.com/wt/', headers=headers, timeout=20)
-        html = BeautifulSoup(response.text, 'html.parser')
-
-        table = html.find('table', attrs={'id': 'ip_list'})
-        trs = table.find_all('tr')
-        trs_list.extend(trs[1:])
+        # time.sleep(1)
+        # response = requests.get('https://www.xicidaili.com/nt/', headers=headers, timeout=20)
+        # html = BeautifulSoup(response.text, 'html.parser')
+        #
+        # table = html.find('table', attrs={'id': 'ip_list'})
+        # trs = table.find_all('tr')
+        # trs_list.extend(trs[1:])
+        # time.sleep(1)
+        # response = requests.get('https://www.xicidaili.com/wn/', headers=headers, timeout=20)
+        # html = BeautifulSoup(response.text, 'html.parser')
+        #
+        # table = html.find('table', attrs={'id': 'ip_list'})
+        # trs = table.find_all('tr')
+        # trs_list.extend(trs[1:])
+        # time.sleep(1)
+        # response = requests.get('https://www.xicidaili.com/wt/', headers=headers, timeout=20)
+        # html = BeautifulSoup(response.text, 'html.parser')
+        #
+        # table = html.find('table', attrs={'id': 'ip_list'})
+        # trs = table.find_all('tr')
+        # trs_list.extend(trs[1:])
 
         proxys = []
-        for i in range(1, len(trs_list)):
+        for i in range(0, len(trs_list)):
             tds = trs_list[i].find_all('td')
             ip = tds[1].get_text()
             port = tds[2].get_text()
