@@ -407,27 +407,27 @@ class GetFreeProxy(object):
         trs = table.find_all('tr')
         trs_list = []
         trs_list.extend(trs[1:])
-        # time.sleep(1)
-        # response = requests.get('https://www.xicidaili.com/nt/', headers=headers, timeout=20)
-        # html = BeautifulSoup(response.text, 'html.parser')
-        #
-        # table = html.find('table', attrs={'id': 'ip_list'})
-        # trs = table.find_all('tr')
-        # trs_list.extend(trs[1:])
-        # time.sleep(1)
-        # response = requests.get('https://www.xicidaili.com/wn/', headers=headers, timeout=20)
-        # html = BeautifulSoup(response.text, 'html.parser')
-        #
-        # table = html.find('table', attrs={'id': 'ip_list'})
-        # trs = table.find_all('tr')
-        # trs_list.extend(trs[1:])
-        # time.sleep(1)
-        # response = requests.get('https://www.xicidaili.com/wt/', headers=headers, timeout=20)
-        # html = BeautifulSoup(response.text, 'html.parser')
-        #
-        # table = html.find('table', attrs={'id': 'ip_list'})
-        # trs = table.find_all('tr')
-        # trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/nt/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/wn/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
+        time.sleep(1)
+        response = requests.get('https://www.xicidaili.com/wt/', headers=headers, timeout=20)
+        html = BeautifulSoup(response.text, 'html.parser')
+
+        table = html.find('table', attrs={'id': 'ip_list'})
+        trs = table.find_all('tr')
+        trs_list.extend(trs[1:])
 
         proxys = []
         for i in range(0, len(trs_list)):

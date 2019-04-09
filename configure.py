@@ -16,6 +16,9 @@ TOUR_FLAG = 'dc'
 #订票策略,1表示必须全部一起预定，2表示可以部分提交
 POLICY_BILL = 1
 
+#cookie存放地址
+COOKIE_SAVE_ADDRESS = 'cookie.txt'
+
 # 选填
 # 车次 eg:['G6343','G6212']
 TRAINS_NO = ['G1404','G1402','G632']
