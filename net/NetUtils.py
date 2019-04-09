@@ -1,6 +1,8 @@
 import collections
 import random
 import time
+from http import cookiejar
+
 from lxml import html
 
 import requests
@@ -29,6 +31,19 @@ class EasyHttp(object):
     @staticmethod
     def get_session():
         return EasyHttp.__session
+
+    @staticmethod
+    def load_cookies(cookie_path):
+        load_cookiejar = cookiejar.LWPCookieJar()
+        load_cookiejar.load(cookie_path, ignore_discard=True, ignore_expires=True)
+        load_cookies = requests.utils.dict_from_cookiejar(load_cookiejar)
+        EasyHttp.__session.cookies = requests.utils.cookiejar_from_dict(load_cookies)
+
+    @staticmethod
+    def save_cookies(cookie_path):
+        new_cookie_jar = cookiejar.LWPCookieJar(cookie_path)
+        requests.utils.cookiejar_from_dict({c.name: c.value for c in EasyHttp.__session.cookies}, new_cookie_jar)
+        new_cookie_jar.save(cookie_path, ignore_discard=True, ignore_expires=True)
 
     @staticmethod
     def updateHeaders(headers):
@@ -74,7 +89,8 @@ class EasyHttp(object):
                                                       url=urlInfo['url'],
                                                       params=params,
                                                       data=data,
-                                                      proxies={"https": "https://{}".format(random.choice(ips)[0]),"http": "http://{}".format(random.choice(ips)[0])},
+                                                      #python3发现proxies写成{"https": "https://{}"}的形式没法访问,笑哭-_-
+                                                      proxies={"http": "http://{}".format(random.choice(ips)[0])},
                                                       timeout=10,
                                                       allow_redirects=False,
                                                       **kwargs)
