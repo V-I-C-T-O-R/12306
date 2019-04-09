@@ -1,5 +1,3 @@
-import json
-import os
 import time
 
 from conf.constant import SEAT_TYPE
