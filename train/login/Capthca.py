@@ -2,6 +2,7 @@ import os
 from io import BytesIO
 
 import requests
+import time
 from PIL import Image
 
 from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
@@ -45,8 +46,9 @@ class Captcha(object):
             'answer': results,
             'login_site': 'E',
             'rand': 'sjrand',
+            '_': int(time.time() * 1000)
         }
-        jsonRet = EasyHttp.send(loginUrls['normal']['captchaCheck'], data=data)
+        jsonRet = EasyHttp.send(loginUrls['normal']['captchaCheck'], params=data)
         # print('captchaCheck: %s' % jsonRet)
 
         def verify(response):
@@ -115,23 +117,25 @@ class Captcha(object):
             if response['result_code'] != '0':
                 return None, False
             img_base64 = response['image']
+            # result = eval(response.split("(")[1].split(")")[0]).get("image")
+            # img_base64 = result
 
             body = {'base64': img_base64}
-            response = requests.post(autoVerifyUrls['api']['url'],json=body,headers ={
-                'Content-Type': 'application/json',
+            response = requests.post(autoVerifyUrls['api']['url'],data=body,headers ={
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             }).json()
 
-            if response['success'] != True:
-                return None, False
-            body = {
-                'check': response['data']['check'],
-                'img_buf': img_base64,
-                'logon': 1,
-                'type': 'D'}
-            response = requests.post(autoVerifyUrls['img_url']['url'],json=body).json()
+            # if response['success'] != True:
+            #     return None, False
+            # body = {
+            #     'check': response['data']['check'],
+            #     'img_buf': img_base64,
+            #     'logon': 1,
+            #     'type': 'D'}
+            # response = requests.post(autoVerifyUrls['img_url']['url'],json=body).json()
             content = str(response['res'])
             results = content.replace('(','').replace(')','')
-
+            Log.d('识别坐标:%s'%results)
         except Exception as e:
             Log.w(e)
             return None, False
@@ -167,11 +171,11 @@ class Captcha(object):
 
     #对应自动验证验证码操作
     def _captchaAutoCheck(self, results):
-
         params = {
             'answer': results,
             'login_site': 'E',
             'rand': 'sjrand',
+            '_':int(time.time() * 1000)
         }
         jsonRet = EasyHttp.send(autoVerifyUrls['check_url'],params=params)
 

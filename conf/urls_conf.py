@@ -1,5 +1,5 @@
 import random
-
+import time
 loginUrls = {
     'normal': {
         'init': {
@@ -43,9 +43,15 @@ loginUrls = {
             'response': 'binary',
             'Referer': r'https://kyfw.12306.cn/otn/resources/login.html',
         },
+        "loginCaptchaCode": {  # 登录验证码
+                "req_url": "/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&{0}&callback=jQuery19108016482864806321_1554298927290&_=1554298927293".format(random.random()),
+                "req_type": "get",
+                "Referer": "https://kyfw.12306.cn/otn/resources/login.html",
+                "Host": "kyfw.12306.cn",
+            },
         'captchaCheck': {
             'url': r'https://kyfw.12306.cn/passport/captcha/captcha-check',
-            'method': 'POST',
+            'method': 'GET',
             'headers': {
                 'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
                 'Referer': r'https://kyfw.12306.cn/otn/resources/login.html',
@@ -60,7 +66,8 @@ loginUrls = {
                 'Accept' : 'application/json, text/javascript, */*; q=0.01',
                 'Origin':'https://kyfw.12306.cn',
                 'Host':'kyfw.12306.cn',
-                'Accept-Encoding':'gzip, deflate, br'
+                'Accept-Encoding':'gzip, deflate, br',
+                'Accept-Language':'zh-CN,zh;q=0.9'
             }
         },
         'userLogin': {
@@ -186,12 +193,13 @@ loginUrls = {
 
 autoVerifyUrls = {
     '12305':{
-        'url':'https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&'.format(
-            random.random()),
-        'method':'GET'
+        'url':'https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&{0}'.format(
+            int(time.time() * 1000)),
+        'method':'GET',
+        # 'response': 'html',
     },
     'api':{
-        'url':'https://12306.jiedanba.cn/api/v2/getCheck',
+        'url':'https://12306.jiedanba.cn/api/v2/img_vcode',
         'method':'POST',
         'headers': {'Content-Type': 'application/json'}
     },
