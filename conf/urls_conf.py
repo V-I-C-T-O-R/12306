@@ -199,7 +199,7 @@ autoVerifyUrls = {
         # 'response': 'html',
     },
     'api':{
-        'url':'https://12306.jiedanba.cn/api/v2/img_vcode',
+        'url':'https://12306.jiedanba.cn/api/v2/getCheck',
         'method':'POST',
         'headers': {'Content-Type': 'application/json'}
     },
@@ -232,6 +232,7 @@ submitUrls = {
                 'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
                 'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
                 'Host': r'kyfw.12306.cn',
+                'X-Requested-With':'XMLHttpRequest'
             },
         },
         'getPassengerDTOs': {
@@ -296,6 +297,7 @@ submitUrls = {
                 'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
                 'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
                 'Host': r'kyfw.12306.cn',
+                'X-Requested-With':'XMLHttpRequest'
             },
         },
         'getPassengerDTOs': {

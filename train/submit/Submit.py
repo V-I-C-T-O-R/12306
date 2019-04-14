@@ -6,6 +6,7 @@ import re
 import time
 from datetime import datetime
 
+import requests
 from colorama import Fore
 
 from conf.constant import TourFlag
@@ -39,9 +40,13 @@ class Submit(object):
             'query_to_station_name': self.__ticket.toStation,
             'undefined': '',
         }
-        jsonRet = EasyHttp.send(self._urlInfo['submitOrderRequest'], data=formData)
+        self._urlInfo['submitOrderRequest']['headers']['Referer'] = self._urlInfo['submitOrderRequest']['headers']['Referer']+ '?linktypeid='+tourFlag
+        # jsonRet = EasyHttp.send(self._urlInfo['submitOrderRequest'], data=formData)
+        response = EasyHttp.post_custom(self._urlInfo['submitOrderRequest'], data=formData)
         # print('submitOrderRequest %s' % jsonRet)
-        return jsonRet['status'], jsonRet['messages']
+        if response and response.status_code == requests.codes.ok:
+            return True,'ok'
+        return False,'failed'
 
     def _getExtraInfo(self):
         def getRepeatSubmitToken(html):

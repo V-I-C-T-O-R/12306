@@ -121,18 +121,20 @@ class Captcha(object):
             # img_base64 = result
 
             body = {'base64': img_base64}
-            response = requests.post(autoVerifyUrls['api']['url'],data=body,headers ={
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            response = requests.post(autoVerifyUrls['api']['url'],json=body,headers ={
+                'Content-Type': 'application/json',
             }).json()
 
-            # if response['success'] != True:
-            #     return None, False
-            # body = {
-            #     'check': response['data']['check'],
-            #     'img_buf': img_base64,
-            #     'logon': 1,
-            #     'type': 'D'}
-            # response = requests.post(autoVerifyUrls['img_url']['url'],json=body).json()
+            if response['success'] != True:
+                return None, False
+            body = {
+                'check': response['data']['check'],
+                'img_buf': img_base64,
+                'logon': 1,
+                'type': 'D',
+                '=':''
+            }
+            response = requests.post(autoVerifyUrls['img_url']['url'],json=body).json()
             content = str(response['res'])
             results = content.replace('(','').replace(')','')
             Log.d('识别坐标:%s'%results)

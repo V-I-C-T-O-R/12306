@@ -178,8 +178,7 @@ class EasyHttp(object):
                 response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       data=data,
-                                                      proxies={"https": "https://{}".format(random.choice(ips)[0]),
-                                                               "http": "http://{}".format(random.choice(ips)[0])},
+                                                      proxies={"http": "http://{}".format(random.choice(ips)[0])},
                                                       timeout=10,
                                                       allow_redirects=False)
         except Exception as e:
