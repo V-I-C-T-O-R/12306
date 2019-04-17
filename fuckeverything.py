@@ -34,7 +34,8 @@ def main():
     cookies = {c.name: c.value for c in EasyHttp.get_session().cookies}
 
     RAIL_EXPIRATION = cookies.get('RAIL_EXPIRATION')
-    if 'RAIL_EXPIRATION' in cookies and int(RAIL_EXPIRATION) < int(time.time()*1000) :
+    #当前实际显示有效时间为4天,实际访问可下单时间大概为2天(细节可按实际情况调节)
+    if 'RAIL_EXPIRATION' in cookies and (int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000) :
         Log.v('cookie登录已过期,重新请求')
         EasyHttp.removeCookies()
         status,login = do_login()
@@ -86,7 +87,7 @@ def main():
                     if sms_id:
                         Log.v("短信提醒发送成功!")
                     else:
-                        Log.v("短信提醒发送成功!")
+                        Log.v("短信提醒发送失败!")
                 break
             time.sleep(1)
         except Exception as e:

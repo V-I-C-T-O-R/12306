@@ -232,7 +232,10 @@ submitUrls = {
                 'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
                 'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
                 'Host': r'kyfw.12306.cn',
-                'X-Requested-With':'XMLHttpRequest'
+                'X-Requested-With':'XMLHttpRequest',
+                'Accept-Encoding':'gzip, deflate, br',
+                'Accept-Language':'zh-CN,zh;q=0.9',
+                'Origin':'https://kyfw.12306.cn',
             },
         },
         'getPassengerDTOs': {
