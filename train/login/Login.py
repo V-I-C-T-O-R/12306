@@ -16,7 +16,7 @@ def loginLogic(func):
     def wrapper(*args, **kw):
         reslut = False
         msg = ''
-        for count in range(10):
+        for count in range(20):
             Log.v('第%s次尝试获取验证图片' % str(count + 1))
             reslut, msg = func(*args, **kw)
             if reslut:
@@ -120,7 +120,7 @@ class Login(object):
         result, msg = isLoginSuccess(jsonRet)
         if not result:
             return False, msg
-        # self._userLogin()
+        self._userLogin()
         self._passportRedirect()
         result, msg, apptk = self._uamtk()
         if not Utils.check(result, msg):

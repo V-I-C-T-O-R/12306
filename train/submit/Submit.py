@@ -44,6 +44,9 @@ class Submit(object):
         # jsonRet = EasyHttp.send(self._urlInfo['submitOrderRequest'], data=formData)
         response = EasyHttp.post_custom(self._urlInfo['submitOrderRequest'], data=formData)
         # print('submitOrderRequest %s' % jsonRet)
+        if response and response.status_code == 302:
+            self._urlInfo['submitOrderRequest']['url'] = response.headers['Location']
+            response = EasyHttp.post_custom(self._urlInfo['submitOrderRequest'], data=formData)
         if response and response.status_code == requests.codes.ok:
             return True,'ok'
         return False,'failed'
@@ -54,6 +57,7 @@ class Submit(object):
             # print('RepeatSubmitToken = %s' % repeatSubmitToken)
             return repeatSubmitToken
 
+        self._urlInfo['getExtraInfo']['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
         html = EasyHttp.send(self._urlInfo['getExtraInfo'])
         if not Utils.check(html, 'getExtraInfoUrl: failed to visit %s' % self._urlInfo['getExtraInfo']['url']):
             return False
@@ -212,9 +216,20 @@ class Submit(object):
         }
         response = NetUtils.get(self.__session, url, headers=headers).text
 
+    def _check_user(self,tourFlag = 'dc'):
+        formData = {
+            '_json_att': ''
+        }
+        self._urlInfo['checkUser']['headers']['Referer'] = self._urlInfo['checkUser']['headers']['Referer']+ '?linktypeid='+tourFlag
+        jsonRet = EasyHttp.post_custom(self._urlInfo['checkUser'],data = formData)
+        return True,jsonRet.text
+        # Log.d('checkUser: %s' % jsonRet)
+
     # seatType:商务座(9),特等座(P),一等座(M),二等座(O),高级软卧(6),软卧(4),硬卧(3),软座(2),硬座(1),无座(1)
     # ticket_type_codes:ticketInfoForPassengerForm['limitBuySeatTicketDTO']['ticket_type_codes']:(成人票:1,儿童票:2,学生票:3,残军票:4)
     def submit(self,choose_seat):
+        self._check_user(self.__ticket.tourFlag)
+
         status, msg = self._submitOrderRequest(self.__ticket.tourFlag)
         if not Utils.check(status, 'submitOrderRequesst: %s' % msg):
             return False

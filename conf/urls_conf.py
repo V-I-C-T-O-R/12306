@@ -72,10 +72,13 @@ loginUrls = {
         },
         'userLogin': {
             'url': r'https://kyfw.12306.cn/otn/login/userLogin',
-            'method': 'POST',
+            'method': 'GET',
             'headers': {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Referer': 'https://kyfw.12306.cn/otn/login/init',
+                'Referer': 'https://kyfw.12306.cn/otn/resources/login.html',
+                'Upgrade-Insecure-Requests':'1',
+                'Accept-Encoding':'gzip, deflate, br',
+                'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             },
             'response': 'html',
         },
@@ -98,6 +101,7 @@ loginUrls = {
             'method': 'POST',
             'headers': {
                 'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
+                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
             }
         },
         'loginOut': {
@@ -244,8 +248,26 @@ submitUrls = {
         },
         'getExtraInfo': {
             'url': r'https://kyfw.12306.cn/otn/confirmPassenger/initDc',
-            'method': 'GET',
+            'method': 'POST',
+            'headers': {
+                'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
+                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
+                'Host': r'kyfw.12306.cn',
+                'X-Requested-With':'XMLHttpRequest',
+                'Accept-Encoding':'gzip, deflate, br',
+                'Accept-Language':'zh-CN,zh;q=0.9',
+                'Origin':'https://kyfw.12306.cn',
+                'Upgrade-Insecure-Requests':'1',
+            },
             'response': 'html',
+        },
+        'checkUser': {
+            'url': r'https://kyfw.12306.cn/otn/login/checkUser',
+            'method': 'POST',
+            'headers': {
+                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
+                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
+            }
         },
         'checkOrderInfo': {
             'url': r'https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo',
@@ -318,6 +340,14 @@ submitUrls = {
             'headers': {
                 'Referer': r'https://kyfw.12306.cn/otn/confirmPassenger/initWc',
             },
+        },
+        'checkUser': {
+            'url': r'https://kyfw.12306.cn/otn/login/checkUser',
+            'method': 'POST',
+            'headers': {
+                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
+                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
+            }
         },
         'getQueueCount': {
             'url': r'https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount',

@@ -11,7 +11,7 @@ def urldeocde(str):
 
 def check(target, log):
     if not target:
-        # Log.e(log)
+        Log.e(log)
         return False
     return True
 
