@@ -2,15 +2,14 @@ import copy
 import json
 import time
 from collections import OrderedDict
-
-from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
 from conf.urls_conf import loginUrls
-from configure import USER_PWD, USER_NAME
+from conf.constant import CAPTCHA_CHECK_METHOD_HAND, CAPTCHA_CHECK_METHOD_THREE
+from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
 from net.NetUtils import EasyHttp
 from train.login.Capthca import Captcha
 from utils import Utils
 from utils.Log import Log
-from conf.constant import CAPTCHA_CHECK_METHOD_HAND,CAPTCHA_CHECK_METHOD_THREE,CAPTCHA_CHECK_METHOD_MYSELF
+
 
 def loginLogic(func):
     def wrapper(*args, **kw):
@@ -172,8 +171,9 @@ class Login(object):
         EasyHttp.send(self._urlInfo['init'])
 
     def _login_init(self):
-        self._urlInfo["getDevicesId"]['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
-        devices_id_rsp = EasyHttp.get_custom(self._urlInfo["getDevicesId"])
+        url_info = copy.deepcopy(self._urlInfo["getDevicesId"])
+        url_info['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
+        devices_id_rsp = EasyHttp.get_custom(url_info)
         if devices_id_rsp:
             callback = devices_id_rsp.text.replace("callbackFunction('", '').replace("')", '')
             text = json.loads(callback)
@@ -192,7 +192,6 @@ if __name__ == '__main__':
     # login.login(USER_NAME, USER_PWD)
     # time.sleep(3)
     # print(login.loginOut())
-    from conf.urls_conf import loginUrls
     devicesIdUrl = copy.deepcopy(loginUrls['normal']["getDevicesId"])
     devices_id_rsp = EasyHttp.get_custom(devicesIdUrl)
     print(devices_id_rsp.text)

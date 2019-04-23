@@ -5,7 +5,7 @@ import json
 import re
 import time
 from datetime import datetime
-
+import copy
 import requests
 from colorama import Fore
 
@@ -40,9 +40,10 @@ class Submit(object):
             'query_to_station_name': self.__ticket.toStation,
             'undefined': '',
         }
-        self._urlInfo['submitOrderRequest']['headers']['Referer'] = self._urlInfo['submitOrderRequest']['headers']['Referer']+ '?linktypeid='+tourFlag
+        order_request = copy.deepcopy(self._urlInfo['submitOrderRequest'])
+        order_request['headers']['Referer'] = self._urlInfo['submitOrderRequest']['headers']['Referer']+ '?linktypeid='+tourFlag
         # jsonRet = EasyHttp.send(self._urlInfo['submitOrderRequest'], data=formData)
-        response = EasyHttp.post_custom(self._urlInfo['submitOrderRequest'], data=formData)
+        response = EasyHttp.post_custom(order_request, data=formData)
         # print('submitOrderRequest %s' % jsonRet)
         if response and response.status_code == 302:
             self._urlInfo['submitOrderRequest']['url'] = response.headers['Location']
@@ -60,8 +61,9 @@ class Submit(object):
         formData = {
             '_json_att': ''
         }
-        self._urlInfo['getExtraInfo']['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
-        response = EasyHttp.post_custom(self._urlInfo['getExtraInfo'],data=formData)
+        extra_info = copy.deepcopy(self._urlInfo['getExtraInfo'])
+        extra_info['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
+        response = EasyHttp.post_custom(extra_info,data=formData)
 
         if response and response.status_code == requests.codes.ok:
             html = response.text
@@ -229,8 +231,9 @@ class Submit(object):
         formData = {
             '_json_att': ''
         }
-        self._urlInfo['checkUser']['headers']['Referer'] = self._urlInfo['checkUser']['headers']['Referer']+ '?linktypeid='+tourFlag
-        jsonRet = EasyHttp.post_custom(self._urlInfo['checkUser'],data = formData)
+        check_user = copy.deepcopy(self._urlInfo['checkUser'])
+        check_user['headers']['Referer'] = self._urlInfo['checkUser']['headers']['Referer']+ '?linktypeid='+tourFlag
+        jsonRet = EasyHttp.post_custom(check_user,data = formData)
         return True,jsonRet.text
         # Log.d('checkUser: %s' % jsonRet)
 
