@@ -2,6 +2,20 @@ import random
 import time
 loginUrls = {
     'normal': {
+        'index':{
+            'url': r'https://www.12306.cn/index/',
+            'method': 'GET',
+            'headers': {
+                'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Upgrade-Insecure-Requests': '1',
+            },
+            'response': 'html',
+        },
+        'conf':{
+            'url':'https://kyfw.12306.cn/otn/login/conf',
+            'method': 'GET',
+            'response': 'html',
+        },
         'init': {
             'url': r'https://kyfw.12306.cn/otn/login/init',
             'method': 'GET',
@@ -17,6 +31,8 @@ loginUrls = {
             'headers': {
                 'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Referer': r'https://www.12306.cn/index/',
+                'Upgrade-Insecure-Requests': '1',
+                'Accept-Encoding':'gzip, deflate, br',
             },
             'response': 'html',
         },
@@ -113,8 +129,13 @@ loginUrls = {
             'response': 'html',
         },
         "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice",
+            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=z0nwCFNNFy&hashCode=Sonomt4GXxQ8y5nP8OKANN4uqj_LKFPbEeGZQpQSQLc&FMQw=0&q4f3=zh-CN&VySQ=FGF9QEe67lYGavdZicwJH4vsu9jHLwS5&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=f57fa883099df9e46e7ee35d22644d2b&lEnu=3232235621&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Win32&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1080x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(Windows%20NT%206.1;%20Win64;%20x64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/68.0.3440.106%20Safari/537.36&E3gR=6ffe6a32e9af788920458ef31ceafe4a&timestamp=",
             "method": "GET",
+            'headers' :{
+            'Host': 'kyfw.12306.cn',
+            'Referer': 'https://kyfw.12306.cn/otn/resources/login.html',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+        }
         }
     },
     # --------------------------------------------------------------------------------------------------------
@@ -251,13 +272,8 @@ submitUrls = {
             'method': 'POST',
             'headers': {
                 'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
-                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
+                'Content-Type': r'application/x-www-form-urlencoded',
                 'Host': r'kyfw.12306.cn',
-                'X-Requested-With':'XMLHttpRequest',
-                'Accept-Encoding':'gzip, deflate, br',
-                'Accept-Language':'zh-CN,zh;q=0.9',
-                'Origin':'https://kyfw.12306.cn',
-                'Upgrade-Insecure-Requests':'1',
             },
             'response': 'html',
         },

@@ -53,6 +53,7 @@ class Login(object):
                jsonRet['newapptk'] if jsonRet and 'newapptk' in jsonRet else 'no newapptk'
 
     def _uamtk_static(self):
+        EasyHttp.send(self._urlInfo['conf'])
         jsonRet = EasyHttp.send(self._urlInfo['uamtk-static'], data={'appid': 'otn'})
 
         def isSuccess(response):
@@ -110,15 +111,15 @@ class Login(object):
         payload['appid'] = 'otn'
         payload['answer'] = results
 
-        jsonRet = EasyHttp.send(self._urlInfo['login'], data=payload)
+        response = EasyHttp.post_custom(self._urlInfo['login'], data=payload)
 
         def isLoginSuccess(responseJson):
             return 0 == responseJson['result_code'] if responseJson and 'result_code' in responseJson else False, \
                    responseJson[
                        'result_message'] if responseJson and 'result_message' in responseJson else '登录失败'
 
-        result, msg = isLoginSuccess(jsonRet)
-        if not result:
+        result, msg = isLoginSuccess(response.json())
+        if not result :
             return False, msg
         self._userLogin()
         self._passportRedirect()
@@ -171,16 +172,18 @@ class Login(object):
         EasyHttp.send(self._urlInfo['init'])
 
     def _login_init(self):
-        EasyHttp.send(self._urlInfo['loginInit'])
+        self._urlInfo["getDevicesId"]['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
         devices_id_rsp = EasyHttp.get_custom(self._urlInfo["getDevicesId"])
         if devices_id_rsp:
             callback = devices_id_rsp.text.replace("callbackFunction('", '').replace("')", '')
             text = json.loads(callback)
             devices_id = text.get('dfp')
             exp = text.get('exp')
-            EasyHttp.setCookies(RAIL_DEVICEID=devices_id,RAIL_EXPIRATION=exp)
+            EasyHttp.setCookies(RAIL_DEVICEID=devices_id, RAIL_EXPIRATION=exp)
             # Log.d('设备Id：%s'%devices_id)
-            return True,'获取设备指纹成功'
+            return True, '获取设备指纹成功'
+        EasyHttp.send(self._urlInfo['index'])
+        EasyHttp.send(self._urlInfo['loginInit'])
         return False,'获取设备指纹失败'
 
 

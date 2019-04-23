@@ -1,5 +1,5 @@
 import time
-
+from conf.urls_conf import loginUrls
 from conf.constant import SEAT_TYPE
 from configure import *
 from net import init_ip_pool
@@ -34,8 +34,8 @@ def main():
     cookies = {c.name: c.value for c in EasyHttp.get_session().cookies}
 
     RAIL_EXPIRATION = cookies.get('RAIL_EXPIRATION')
-    #当前实际显示有效时间为4天,实际访问可下单时间大概为2天(细节可按实际情况调节)
-    if 'RAIL_EXPIRATION' in cookies and (int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000) :
+    #(int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000)
+    if 'RAIL_EXPIRATION' in cookies and int(RAIL_EXPIRATION) < int(time.time()*1000) :
         Log.v('cookie登录已过期,重新请求')
         EasyHttp.removeCookies()
         status,login = do_login()
@@ -48,6 +48,7 @@ def main():
                 return
         else:
             login = Login()
+            login._urlInfo = loginUrls['normal']
             Log.v('已登录状态,开始寻找小票票')
 
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]

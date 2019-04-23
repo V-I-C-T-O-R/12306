@@ -57,8 +57,17 @@ class Submit(object):
             # print('RepeatSubmitToken = %s' % repeatSubmitToken)
             return repeatSubmitToken
 
+        formData = {
+            '_json_att': ''
+        }
         self._urlInfo['getExtraInfo']['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
-        html = EasyHttp.send(self._urlInfo['getExtraInfo'])
+        response = EasyHttp.post_custom(self._urlInfo['getExtraInfo'],data=formData)
+
+        if response and response.status_code == requests.codes.ok:
+            html = response.text
+        else:
+            html = None
+        # html = EasyHttp.send(self._urlInfo['getExtraInfo'])
         if not Utils.check(html, 'getExtraInfoUrl: failed to visit %s' % self._urlInfo['getExtraInfo']['url']):
             return False
         self.__ticket.repeatSubmitToken = getRepeatSubmitToken(html)
@@ -109,7 +118,7 @@ class Submit(object):
         jsonRet = EasyHttp.send(self._urlInfo['getPassengerDTOs'], data=formData)
         passengersList = jsonRet['data']['normal_passengers']
         return jsonRet['status'] if 'status' in jsonRet else False, \
-               jsonRet['messages'] if 'messages' in jsonRet else '无法获取乘客信息，请先进行添加!', \
+               jsonRet['messages'] if jsonRet and 'messages' in jsonRet else '无法获取乘客信息，请先进行添加!', \
                self.__getPassengerInfo(passengersList)
 
     # passengerName:乘客姓名

@@ -1,3 +1,4 @@
+import json
 import os
 from io import BytesIO
 
@@ -93,7 +94,7 @@ class Captcha(object):
         return results, self.check(results, type)
 
     def __indexTransCaptchaResults(self, indexes, sep=r','):
-        coordinates = ['40,40', '110,40', '180,40', '250,40', '40,110', '110,110', '180,110', '250,110']
+        coordinates = ['31, 35', '116, 46', '191, 24', '243, 50', '22, 114', '117, 94', '167, 120', '251, 105']
         results = []
         for index in indexes.split(sep=sep):
             results.append(coordinates[int(index)])
@@ -121,9 +122,10 @@ class Captcha(object):
             # img_base64 = result
 
             body = {'base64': img_base64}
-            response = requests.post(autoVerifyUrls['api']['url'],json=body,headers ={
-                'Content-Type': 'application/json',
-            }).json()
+            response = EasyHttp.post_custom(autoVerifyUrls['api'],data=json.dumps(body)).json()
+            # response = requests.post(autoVerifyUrls['api']['url'],json=body,headers ={
+            #     'Content-Type': 'application/json',
+            # }).json()
 
             if response['success'] != True:
                 return None, False
@@ -134,7 +136,7 @@ class Captcha(object):
                 'type': 'D',
                 '=':''
             }
-            response = requests.post(autoVerifyUrls['img_url']['url'],json=body).json()
+            response = EasyHttp.post_custom(autoVerifyUrls['img_url'],data=json.dumps(body)).json()
             content = str(response['res'])
             results = content.replace('(','').replace(')','')
             Log.d('识别坐标:%s'%results)
