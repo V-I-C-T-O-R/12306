@@ -15,6 +15,7 @@ from utils.email_tool import send_mail
 from utils.sms import send_sms
 
 def do_login():
+    EasyHttp.removeCookies()
     login = Login()
     Log.v('正在登录...')
     result, msg = login.login(USER_NAME, USER_PWD, SELECT_AUTO_CHECK_CAPTHCA)
@@ -35,9 +36,8 @@ def main():
 
     RAIL_EXPIRATION = cookies.get('RAIL_EXPIRATION')
     #(int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000)
-    if 'RAIL_EXPIRATION' in cookies and int(RAIL_EXPIRATION) < int(time.time()*1000) :
+    if RAIL_EXPIRATION and int(RAIL_EXPIRATION) < int(time.time()*1000) :
         Log.v('cookie登录已过期,重新请求')
-        EasyHttp.removeCookies()
         status,login = do_login()
         if not status:
             return
@@ -47,6 +47,20 @@ def main():
             if not status:
                 return
         else:
+            response = EasyHttp.post_custom(loginUrls['normal']['conf'])
+            if not response or not response.json():
+                Log.v('登录状态检查失败,重新请求')
+                status, login = do_login()
+                if not status:
+                    return
+            resp = response.json()
+            login_status = resp.get('data').get('is_login')
+            Log.d('登录状态：%s'%login_status)
+            if 'Y' != login_status:
+                Log.v('登录状态已过期,重新请求')
+                status, login = do_login()
+                if not status:
+                    return
             login = Login()
             login._urlInfo = loginUrls['normal']
             Log.v('已登录状态,开始寻找小票票')

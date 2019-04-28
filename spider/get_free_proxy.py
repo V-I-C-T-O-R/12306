@@ -371,7 +371,7 @@ class GetFreeProxy(object):
     @staticmethod
     def get_list_proxys():
         proxys = []
-        proxys.extend(GetFreeProxy.freeProxySecond())
+        # proxys.extend(GetFreeProxy.freeProxySecond()) 无效
         # proxys.extend(GetFreeProxy.freeProxyFourth()) 无效
         # proxys.extend(GetFreeProxy.freeProxyFifth()) 无效
         proxys.extend(GetFreeProxy.freeProxySixth())

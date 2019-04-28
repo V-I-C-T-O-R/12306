@@ -13,7 +13,7 @@ loginUrls = {
         },
         'conf':{
             'url':'https://kyfw.12306.cn/otn/login/conf',
-            'method': 'GET',
+            'method': 'POST',
             'response': 'html',
         },
         'init': {
@@ -272,8 +272,8 @@ submitUrls = {
             'method': 'POST',
             'headers': {
                 'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
-                'Content-Type': r'application/x-www-form-urlencoded',
                 'Host': r'kyfw.12306.cn',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
             },
             'response': 'html',
         },

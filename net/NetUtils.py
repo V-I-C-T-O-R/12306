@@ -53,11 +53,7 @@ class EasyHttp(object):
     def resetHeaders():
         EasyHttp.__session.headers.clear()
         EasyHttp.__session.headers.update({
-            'Host': r'kyfw.12306.cn',
-            'Referer': 'https://kyfw.12306.cn/otn/login/init',
             'User-Agent': random.choice(USER_AGENT),
-            "Accept-Encoding": "gzip, deflate, br",
-            "X-Requested-With": "XMLHttpRequest"
         })
 
     @staticmethod
@@ -163,7 +159,7 @@ class EasyHttp(object):
 
     @staticmethod
     @sendLogic
-    def post_custom(urlInfo,data):
+    def post_custom(urlInfo,data=None):
         EasyHttp.resetHeaders()
         if 'headers' in urlInfo and urlInfo['headers']:
             EasyHttp.updateHeaders(urlInfo['headers'])
