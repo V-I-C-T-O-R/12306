@@ -75,21 +75,27 @@ class Login(object):
 
     def login(self, userName, userPwd, autoCheck=2):
         # 登录有两种api
-        for count in range(2):
-            result, msg = self._login(userName, userPwd, autoCheck, type=(count % 2))
-            if Utils.check(result, msg):
-                return result, msg
+        # for count in range(2):
+        #     result, msg = self._login(userName, userPwd, autoCheck, type=(count % 2))
+        #     if Utils.check(result, msg):
+        #         return result, msg
+        # return False, '登录失败'
+
+        #屏蔽掉第二种api
+        result, msg = self._login(userName, userPwd, autoCheck, type = 0)
+        if Utils.check(result, msg):
+            return result, msg
         return False, '登录失败'
 
     @loginLogic
     def _login(self, userName, userPwd, autoCheck=2, type=TYPE_LOGIN_NORMAL_WAY):
         if type == TYPE_LOGIN_OTHER_WAY:
             self._urlInfo = loginUrls['other']
-            return self._loginAsyncSuggest(userName, userPwd,autoCheck)
+            return self._loginAsyncSuggest(userName, userPwd,autoCheck, type)
         self._urlInfo = loginUrls['normal']
-        return self._loginNormal(userName, userPwd,autoCheck)
+        return self._loginNormal(userName, userPwd,autoCheck, type)
 
-    def _loginNormal(self, userName, userPwd, autoCheck=2):
+    def _loginNormal(self, userName, userPwd, autoCheck=2,type=TYPE_LOGIN_NORMAL_WAY):
         status,msg = self._login_init()
         if not status:
             return status, msg
@@ -97,9 +103,9 @@ class Login(object):
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
             results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            results, verify = Captcha().verifyCaptchaByHand()
+            results, verify = Captcha().verifyCaptchaByHand(type=type)
         else:
-            results, verify = Captcha().verifyCodeAutoByMyself()
+            results, verify = Captcha().verifyCodeAutoByMyself(type=type)
 
         if not verify:
             return False, '验证码识别错误!'
@@ -127,14 +133,14 @@ class Login(object):
             return False, 'uamtk failed'
         return self._uamauthclient(apptk)
 
-    def _loginAsyncSuggest(self, userName, userPwd, autoCheck=2):
+    def _loginAsyncSuggest(self, userName, userPwd, autoCheck=2,type=TYPE_LOGIN_OTHER_WAY):
         self._init()
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
             results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            results, verify = Captcha().verifyCaptchaByHand()
+            results, verify = Captcha().verifyCaptchaByHand(type=type)
         else:
-            results, verify = Captcha().verifyCodeAutoByMyself()
+            results, verify = Captcha().verifyCodeAutoByMyself(type=type)
         if not verify:
             return False, '验证码识别错误!'
         Log.v('验证码识别成功')

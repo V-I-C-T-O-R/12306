@@ -37,7 +37,7 @@ def main():
     RAIL_EXPIRATION = cookies.get('RAIL_EXPIRATION')
     #(int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000)
     if RAIL_EXPIRATION and int(RAIL_EXPIRATION) < int(time.time()*1000) :
-        Log.v('cookie登录已过期,重新请求')
+        Log.d('cookie登录已过期,重新请求')
         status,login = do_login()
         if not status:
             return
@@ -49,7 +49,7 @@ def main():
         else:
             response = EasyHttp.post_custom(loginUrls['normal']['conf'])
             if not response or not response.json():
-                Log.v('登录状态检查失败,重新请求')
+                Log.d('登录状态检查失败,重新请求')
                 status, login = do_login()
                 if not status:
                     return
@@ -57,7 +57,7 @@ def main():
             login_status = resp.get('data').get('is_login')
             Log.d('登录状态：%s'%login_status)
             if 'Y' != login_status:
-                Log.v('登录状态已过期,重新请求')
+                Log.d('登录状态已过期,重新请求')
                 status, login = do_login()
                 if not status:
                     return
