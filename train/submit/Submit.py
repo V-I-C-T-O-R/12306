@@ -356,7 +356,7 @@ class Submit(object):
                 elif errorMsg:
                     Log.e(errorMsg)
                     return None
-            interval = waitTime // 60
+            interval = waitTime / 60
             Log.w('未出票，订单排队中...预估等待时间: %s 分钟' % (interval if interval <= 30 else '超过30'))
             if interval > 30:
                 time.sleep(60)

@@ -6,7 +6,6 @@ def send_sms(account_sid,auth_token,from_man,to_man,msg):
         to=to_man,
         from_=from_man,
         body=msg)
-    print("content:"+message.body if message.body else '')
     return message.sid
 
 if __name__ == '__main__':
