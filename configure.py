@@ -34,9 +34,9 @@ CHOOSE_SEATS = []
 # 刷票间隔(单位:s)
 QUERY_TICKET_REFERSH_INTERVAL = 2
 
-#选择识别验证码的方式,默认2方式
-# 1表示手动,2表示自动识别(调用第三方接口),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai/tencent ai账号)
-SELECT_AUTO_CHECK_CAPTHCA = 2
+#选择识别验证码的方式,默认1方式
+# 1表示手动,2表示自动识别(调用第三方接口,已失效),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai/tencent ai账号)
+SELECT_AUTO_CHECK_CAPTHCA = 1
 #baidu/tencent选择,此参数只在SELECT_AUTO_CHECK_CAPTHCA = 3的情况下有效,默认为百度服务
 IMAGE_OCR_SERVICE_CHOOSE = 1
 
