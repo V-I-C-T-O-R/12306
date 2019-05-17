@@ -13,6 +13,10 @@ IMAGE_OCR_SERVICE_TENCENT = 2
 POLICY_BILL_ALL = 1
 POLICY_BILL_SINGLE = 2
 
+#高铁选座策略
+NUM_SEAT = ['1','2']
+LETTER_SEAT = ['A','B','C','D','F']
+
 class TourFlag(object):
     SINGLE = 'dc'
     GO_BACK = 'wc'

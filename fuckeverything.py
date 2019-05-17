@@ -1,6 +1,8 @@
+import copy
+import random
 import time
 from conf.urls_conf import loginUrls
-from conf.constant import SEAT_TYPE
+from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT
 from configure import *
 from net import init_ip_pool
 from net.NetUtils import EasyHttp
@@ -90,7 +92,17 @@ def main():
             ticketDetails.ticketTypeCodes = passengerTypeCode
             ticketDetails.tourFlag = TOUR_FLAG if TOUR_FLAG else 'dc'
             submit = Submit(ticketDetails)
-            if submit.submit(CHOOSE_SEATS):
+            seats_default = copy.deepcopy(CHOOSE_SEATS)
+            if (ticketDetails.seatType == SEAT_TYPE[SeatName.FIRST_CLASS_SEAT] or ticketDetails.seatType == SeatName.SECOND_CLASS_SEAT) and not seats_default:
+                results_seat = []
+                for i in range(len(PASSENGERS_ID)):
+                    random_seat = random.choice(NUM_SEAT)+random.choice(LETTER_SEAT)
+                    if random_seat in results_seat:
+                        continue
+                    results_seat.append(random_seat)
+                seats_default.extend(results_seat)
+
+            if submit.submit(seats_default):
                 status, contents = submit.showSubmitInfoPretty()
                 if status:
                     flag = send_mail(mail_user, mailto_list, '12306订票结果通知', mail_host, mail_user, mail_pass, contents)

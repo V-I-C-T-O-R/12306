@@ -185,6 +185,7 @@ class Submit(object):
             'leftTicketStr': self.__ticket.ticketInfoForPassengerForm['leftTicketStr'],
             'train_location': self.__ticket.ticketInfoForPassengerForm['train_location'],
             'choose_seats': ''.join(choose_seat) or '',
+            # 'choose_seats':''.join(choose_seat) if choose_seat else '',
             'seatDetailType': '000',  # todo::make clear 000 comes from
             'whatsSelect': '1',
             'roomType': '00',  # todo::make clear this value comes from
@@ -307,7 +308,7 @@ class Submit(object):
     def showSubmitInfoPretty(self):
         status, msg, jsonTicketInfo = self._queryMyOrderNoComplete()
         if not Utils.check(status, msg):
-            return False,None
+            return False,msg
         from prettytable import PrettyTable
         table = PrettyTable()
         table.field_names = '序号 车次信息 席位信息 旅客信息 票款金额 车票状态'.split(sep=' ')
@@ -356,7 +357,7 @@ class Submit(object):
                 elif errorMsg:
                     Log.e(errorMsg)
                     return None
-            interval = waitTime / 60
+            interval = waitTime // 60
             Log.w('未出票，订单排队中...预估等待时间: %s 分钟' % (interval if interval <= 30 else '超过30'))
             if interval > 30:
                 time.sleep(60)
