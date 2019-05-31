@@ -199,13 +199,13 @@ class Submit(object):
 
     def _queryOrderWaitTime(self):
         params = {
-            'random': '%10d' % (time.time() * 1000),
+            'random': '%d' % (time.time() * 1000),
             'tourFlag': self.__ticket.ticketInfoForPassengerForm['tour_flag'] or 'dc',
             '_json_att': '',
             'REPEAT_SUBMIT_TOKEN': self.__ticket.repeatSubmitToken,
         }
         jsonRet = EasyHttp.send(self._urlInfo['queryOrderWaitTime'], params=params)
-        # print('queryOrderWaitTime: %s' % jsonRet)
+
         return jsonRet['status'], jsonRet['messages'], jsonRet['data']['waitTime'], jsonRet['data']['orderId'], \
                jsonRet['data']['msg'] if 'msg' in jsonRet['data'] else None
 
@@ -221,7 +221,7 @@ class Submit(object):
 
     # TODO::finish it
     def _payOrderInfo(self):
-        url = r'https://kyfw.12306.cn/otn//payOrder/init?random=%10d' % (time.time() * 1000)
+        url = r'https://kyfw.12306.cn/otn/payOrder/init?random=%d' % (time.time() * 1000)
         headers = {
             'User-Agent': FIREFOX_USER_AGENT,
             'Connection': 'keep-alive',
@@ -262,7 +262,7 @@ class Submit(object):
             for id in self.__ticket.passengersId:
                 passengersDetails.append(passengersDetailsList.get(id))
 
-        time.sleep(0.5)
+        time.sleep(0.2)
         status, msg, submitStatus, errMsg = self._checkOrderInfo(passengersDetails, self.__ticket.seatType,
                                                                  self.__ticket.ticketTypeCodes)
         if not Utils.check(status, 'checkOrderInfo: %s' % msg) or not Utils.check(submitStatus,
