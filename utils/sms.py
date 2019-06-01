@@ -9,11 +9,6 @@ def send_sms(account_sid,auth_token,from_man,to_man,msg):
     return message.sid
 
 if __name__ == '__main__':
-    # Your Account SID from twilio.com/console
-    account_sid = "BC8473842717d4daa96bf8b611fd311f77"
-    # Your Auth Token from twilio.com/console
-    auth_token = "1b80jdkg15572c2901a6471ff1f59e6a"
-    from_num = '(731) 711-9418'
-    to_num = '+8617269512465'
-    msg = 'hello world'
-    send_sms(account_sid,auth_token,from_num,to_num,msg)
+    from configure import ACCOUNT_SID,AUTO_TOKEN,FROM_NUM,TO_NUM
+    msg = '测试一下，亲爱的路人'
+    send_sms(ACCOUNT_SID,AUTO_TOKEN,FROM_NUM,TO_NUM,msg)
