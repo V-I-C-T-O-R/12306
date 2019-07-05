@@ -16,12 +16,13 @@ def passengerTicketStrs(seatType, passengersDetails, ticketTypeCodes=1):
 
 def passengerTicketStr(seatType, passengerDetails, ticketTypeCodes=1):
     # 1(seatType),0,1(车票类型:ticket_type_codes),张三(passenger_name),1(证件类型:passenger_id_type_code),320xxxxxx(passenger_id_no),151xxxx(mobile_no),N
-    return '%s,0,%s,%s,%s,%s,%s,N' % (seatType,
+    return '%s,0,%s,%s,%s,%s,%s,N,%s' % (seatType,
                                       ticketTypeCodes,
                                       passengerDetails.passengerName,
                                       passengerDetails.passengerIdTypeCode,
                                       passengerDetails.passengerIdNo,
-                                      passengerDetails.mobileNo)
+                                      passengerDetails.mobileNo,
+                                      passengerDetails.allEncStr)
 
 
 # name,1,identity,1_name2,1,identity2,1_

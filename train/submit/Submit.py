@@ -106,7 +106,11 @@ class Submit(object):
             passenger.recordCount = passengerJson.get('recordCount') or ''
             passenger.totalTimes = passengerJson.get('total_times') or ''
             passenger.indexId = passengerJson.get('index_id') or ''
-            passengersDetails[passenger.passengerIdNo] = passenger
+            passenger.allEncStr = passengerJson.get('allEncStr') or ''
+
+            #12306版本更新隐藏了证件号,直接取最后三位
+            passengersDetails[passenger.passengerIdNo[-3:]] = passenger
+            # passengersDetails[passenger.passengerIdNo] = passenger
         return passengersDetails
 
     # get user's passengers info
@@ -257,10 +261,14 @@ class Submit(object):
         if len(self.__ticket.passengersId) >= self.__ticket.remindNum:
             for i in range(self.__ticket.remindNum):
                 id = self.__ticket.passengersId[i]
-                passengersDetails.append(passengersDetailsList.get(id))
+                ticket_details = passengersDetailsList.get(id[-3:])
+                ticket_details.passengerIdNo = id
+                passengersDetails.append(ticket_details)
         else:
             for id in self.__ticket.passengersId:
-                passengersDetails.append(passengersDetailsList.get(id))
+                ticket_details = passengersDetailsList.get(id[-3:])
+                ticket_details.passengerIdNo = id
+                passengersDetails.append(ticket_details)
 
         time.sleep(0.2)
         status, msg, submitStatus, errMsg = self._checkOrderInfo(passengersDetails, self.__ticket.seatType,
