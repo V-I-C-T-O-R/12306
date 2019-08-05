@@ -319,31 +319,34 @@ class Submit(object):
             return False,msg
         from prettytable import PrettyTable
         table = PrettyTable()
-        table.field_names = '序号 车次信息 席位信息 旅客信息 票款金额 车票状态'.split(sep=' ')
-        totalTicketNum = TrainUtils.submitTicketTotalNum(jsonTicketInfo)
-        results = []
-        for i in range(totalTicketNum):
-            table.add_row([i + 1,
-                           TrainUtils.submitTrainInfo(i, jsonTicketInfo),
-                           TrainUtils.submitCoachInfo(i, jsonTicketInfo),
-                           TrainUtils.submitPassengerInfo(i, jsonTicketInfo),
-                           TrainUtils.submitTicketCostInfo(i, jsonTicketInfo),
-                           TrainUtils.submitTicketPayInfo(i, jsonTicketInfo),
-                           ])
-            results.append([i + 1,
-                           TrainUtils.submitTrainInfo(i, jsonTicketInfo),
-                           TrainUtils.submitCoachInfo(i, jsonTicketInfo),
-                           TrainUtils.submitPassengerInfo(i, jsonTicketInfo),
-                           TrainUtils.submitTicketCostInfo(i, jsonTicketInfo),
-                           TrainUtils.submitTicketPayInfo(i, jsonTicketInfo),
-                           ])
-            if not i == totalTicketNum - 1:
-                table.add_row([2 * '-', 2 * '-', 2 * '-', 2 * '-', 2 * '-', 2 * '-'])
+        try:
+            table.field_names = '序号 车次信息 席位信息 旅客信息 票款金额 车票状态'.split(sep=' ')
+            totalTicketNum = TrainUtils.submitTicketTotalNum(jsonTicketInfo)
+            results = []
+            for i in range(totalTicketNum):
+                table.add_row([i + 1,
+                               TrainUtils.submitTrainInfo(i, jsonTicketInfo),
+                               TrainUtils.submitCoachInfo(i, jsonTicketInfo),
+                               TrainUtils.submitPassengerInfo(i, jsonTicketInfo),
+                               TrainUtils.submitTicketCostInfo(i, jsonTicketInfo),
+                               TrainUtils.submitTicketPayInfo(i, jsonTicketInfo),
+                               ])
+                results.append([i + 1,
+                               TrainUtils.submitTrainInfo(i, jsonTicketInfo),
+                               TrainUtils.submitCoachInfo(i, jsonTicketInfo),
+                               TrainUtils.submitPassengerInfo(i, jsonTicketInfo),
+                               TrainUtils.submitTicketCostInfo(i, jsonTicketInfo),
+                               TrainUtils.submitTicketPayInfo(i, jsonTicketInfo),
+                               ])
+                if not i == totalTicketNum - 1:
+                    table.add_row([2 * '-', 2 * '-', 2 * '-', 2 * '-', 2 * '-', 2 * '-'])
 
-        print(table)
+            print(table)
 
-        Log.v('总张数:%d\t待支付金额:%s' % (
-            totalTicketNum, Fore.YELLOW + '{}元'.format(TrainUtils.submitTicketTotalCost(jsonTicketInfo)) + Fore.RESET))
+            Log.v('总张数:%d\t待支付金额:%s' % (
+                totalTicketNum, Fore.YELLOW + '{}元'.format(TrainUtils.submitTicketTotalCost(jsonTicketInfo)) + Fore.RESET))
+        except BaseException as e:
+            return False,None
         return True,results
 
     def showSubmitInfo(self):

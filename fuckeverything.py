@@ -106,12 +106,12 @@ def main():
                 status, contents = submit.showSubmitInfoPretty()
                 if status:
                     Log.v("获取车票详情成功")
+                    flag = send_mail(mail_user, mailto_list, '12306订票结果通知', mail_host, mail_user, mail_pass, contents)
+                    if flag:
+                        Log.v("邮件发送成功!")
+                    else:
+                        Log.v("邮件发送失败!")
 
-                flag = send_mail(mail_user, mailto_list, '12306订票结果通知', mail_host, mail_user, mail_pass, contents)
-                if flag:
-                    Log.v("邮件发送成功!")
-                else:
-                    Log.v("邮件发送失败!")
                 sms_id = send_sms(ACCOUNT_SID,AUTO_TOKEN,FROM_NUM,TO_NUM,'小机机已经成功拿到小票票，请主人记得在30分钟内完成支付!!!')
                 if sms_id:
                     Log.v("短信提醒发送成功!")
