@@ -129,7 +129,7 @@ loginUrls = {
             'response': 'html',
         },
         "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=8iIPwpB28l&hashCode=HwPCJ0s69KyiY7BGX9V9gffBuNv-vlWl4ERrSdOSYJU&FMQw=1&q4f3=zh-CN&VySQ=FGHg2HM6LIR-UaFdomcou9ynX1WVNfjD&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
+            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=Odifk5tYJ5&hashCode=Capu7SS11Zf8Ah-0Dyy0xhnoRnNyBo7XtmGYo3pmOTo&FMQw=1&q4f3=zh-CN&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232261143&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
             "method": "GET",
             'headers' :{
             'Host': 'kyfw.12306.cn',
@@ -208,7 +208,7 @@ loginUrls = {
             'response': 'html',
         },
         "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=8iIPwpB28l&hashCode=HwPCJ0s69KyiY7BGX9V9gffBuNv-vlWl4ERrSdOSYJU&FMQw=1&q4f3=zh-CN&VySQ=FGHg2HM6LIR-UaFdomcou9ynX1WVNfjD&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
+            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=Odifk5tYJ5&hashCode=Capu7SS11Zf8Ah-0Dyy0xhnoRnNyBo7XtmGYo3pmOTo&FMQw=1&q4f3=zh-CN&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232261143&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
             "method": "GET",
             "Referer": "https://kyfw.12306.cn/otn/passport?redirect=/otn/",
             "Host": "kyfw.12306.cn",
