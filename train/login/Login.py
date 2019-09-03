@@ -182,15 +182,19 @@ class Login(object):
         devices_id_rsp = EasyHttp.get_custom(url_info)
         if devices_id_rsp:
             callback = devices_id_rsp.text.replace("callbackFunction('", '').replace("')", '')
-            text = json.loads(callback)
-            devices_id = text.get('dfp')
-            exp = text.get('exp')
+            try:
+                text = json.loads(callback)
+                devices_id = text.get('dfp')
+                exp = text.get('exp')
+            except Exception as e:
+                print(e)
+                return False,'获取设备指纹失败,请查询12306设备Id获取url是否需要更新'
             EasyHttp.setCookies(RAIL_DEVICEID=devices_id, RAIL_EXPIRATION=exp)
             # Log.d('设备Id：%s'%devices_id)
             return True, '获取设备指纹成功'
         EasyHttp.send(self._urlInfo['index'])
         EasyHttp.send(self._urlInfo['loginInit'])
-        return False,'获取设备指纹失败'
+        return False,'获取设备指纹失败,请查询12306设备Id获取url是否需要更新'
 
 
 if __name__ == '__main__':
