@@ -2,6 +2,9 @@ import copy
 import json
 import time
 from collections import OrderedDict
+
+import requests
+
 from conf.urls_conf import loginUrls
 from conf.constant import CAPTCHA_CHECK_METHOD_HAND, CAPTCHA_CHECK_METHOD_THREE
 from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
@@ -9,6 +12,7 @@ from net.NetUtils import EasyHttp
 from train.login.Capthca import Captcha
 from utils import Utils
 from utils.Log import Log
+from utils.device_code import request_alg_id, get_hash_code_params
 
 
 def loginLogic(func):
@@ -123,6 +127,8 @@ class Login(object):
                    responseJson[
                        'result_message'] if responseJson and 'result_message' in responseJson else '登录失败'
 
+        if response.status_code != requests.codes.ok:
+            return False, "登录请求被强制重定向,准备重试..."
         result, msg = isLoginSuccess(response.json())
         if not result :
             return False, msg
@@ -177,11 +183,17 @@ class Login(object):
         EasyHttp.send(self._urlInfo['init'])
 
     def _login_init(self):
+        #死方法来手动每次更新deviceid url
         url_info = copy.deepcopy(self._urlInfo["getDevicesId"])
         url_info['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
         devices_id_rsp = EasyHttp.get_custom(url_info)
+
+        # params = {"algID": request_alg_id(self._urlInfo['getJS']), "timestamp": int(time.time() * 1000)}
+        # params = dict(params, **get_hash_code_params())
+        # devices_id_rsp = EasyHttp.send(self._urlInfo["getDevicesId"],params=params)
         if devices_id_rsp:
-            callback = devices_id_rsp.text.replace("callbackFunction('", '').replace("')", '')
+            callback = devices_id_rsp.text[18:-2]
+            # callback = devices_id_rsp.replace("callbackFunction('", '').replace("')", '')
             try:
                 text = json.loads(callback)
                 devices_id = text.get('dfp')
