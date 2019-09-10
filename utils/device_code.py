@@ -1,7 +1,7 @@
 import random
 
 import re
-#此方法摘自https://github.com/pjialin/py12306
+#此方法摘自https://github.com/testerSunshine/12306
 from net.NetUtils import EasyHttp
 
 

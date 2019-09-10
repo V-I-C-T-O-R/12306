@@ -2,7 +2,8 @@ import copy
 import random
 import time
 from conf.urls_conf import loginUrls
-from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_MYSELF
+from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_MYSELF, \
+    CAPTCHA_CHECK_METHOD_THREE
 from configure import *
 from net import init_ip_pool
 from net.NetUtils import EasyHttp
@@ -122,7 +123,7 @@ def main():
 
             #仅支持自动登录或第三方AI自动登录
             status = check_re_login()
-            if not status and SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_MYSELF :
+            if not status and (SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_MYSELF or SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_THREE) :
                 status, login = do_login()
                 if not status:
                     Log.e("自动登录失败,请手动重试")
