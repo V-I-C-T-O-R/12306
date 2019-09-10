@@ -24,7 +24,7 @@ def read_image(fn):
     """
     im = None
     try:
-        im = skimage.io.imread(fn, as_grey=False)
+        im = skimage.io.imread(fn, as_gray=False)
     except Exception:
         pass
     return im

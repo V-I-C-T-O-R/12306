@@ -2,7 +2,7 @@ import copy
 import random
 import time
 from conf.urls_conf import loginUrls
-from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT
+from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_MYSELF
 from configure import *
 from net import init_ip_pool
 from net.NetUtils import EasyHttp
@@ -28,6 +28,35 @@ def do_login():
     Log.v('%s,登录成功' % msg)
     return True,login
 
+def check_login():
+    response = EasyHttp.post_custom(loginUrls['normal']['conf'])
+    if not response or not response.json():
+        Log.d('登录状态检查失败,重新请求')
+        status, login = do_login()
+        if not status:
+            return False
+    resp = response.json()
+    login_status = resp.get('data').get('is_login')
+    Log.d('登录状态：%s' % login_status)
+    if 'Y' != login_status:
+        Log.d('登录状态已过期,重新请求')
+        status, login = do_login()
+        if not status:
+            return False
+    return True
+
+def check_re_login():
+    response = EasyHttp.post_custom(loginUrls['normal']['conf'])
+    if not response or not response.json():
+        return False
+    resp = response.json()
+    login_status = resp.get('data').get('is_login')
+    Log.d('登录状态：%s' % login_status)
+    if 'Y' != login_status:
+        Log.d('登录状态已过期,重新请求')
+        return False
+    return True
+
 def main():
     #免费代理ip访问
     GetFreeProxy.getAllProxy(THREAD_POOL_SIZE, THREAD_OR_PROCESS, IS_REFASH_IP_POOL)
@@ -49,20 +78,9 @@ def main():
             if not status:
                 return
         else:
-            response = EasyHttp.post_custom(loginUrls['normal']['conf'])
-            if not response or not response.json():
-                Log.d('登录状态检查失败,重新请求')
-                status, login = do_login()
-                if not status:
-                    return
-            resp = response.json()
-            login_status = resp.get('data').get('is_login')
-            Log.d('登录状态：%s'%login_status)
-            if 'Y' != login_status:
-                Log.d('登录状态已过期,重新请求')
-                status, login = do_login()
-                if not status:
-                    return
+            status = check_login()
+            if not status:
+                return
             login = Login()
             login._urlInfo = loginUrls['normal']
             Log.v('已登录状态,开始寻找小票票')
@@ -101,6 +119,14 @@ def main():
                         continue
                     results_seat.append(random_seat)
                 seats_default.extend(results_seat)
+
+            #仅支持自动登录或第三方AI自动登录
+            status = check_re_login()
+            if not status and SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_MYSELF :
+                status, login = do_login()
+                if not status:
+                    Log.e("自动登录失败,请手动重试")
+                    return
 
             if submit.submit(seats_default):
                 status, contents = submit.showSubmitInfoPretty()

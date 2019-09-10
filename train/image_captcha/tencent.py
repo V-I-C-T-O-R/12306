@@ -131,7 +131,7 @@ class TencentAI(object):
         datas[request_type] = value
         # 生成请求包
         self.gen_req_dict(req_dict=datas)
-        resp = requests.post(tencent_api['APIURL'], data=datas, verify=False,timeout = 10)
+        resp = requests.post(tencent_api['APIURL'], data=datas, verify=False,timeout = 30)
         return resp
 
     def resolve_image(self,file_path):
@@ -174,7 +174,7 @@ class TencentAI(object):
 
     def resolve_words(self,file_path):
         try:
-            ocr_generalocr = tencent_api['ocr_generalocr']
+            ocr_generalocr = tencent_api['ocr_handwritingocr']
             content = self.resolve_api(ocr_generalocr, file_path).json()
             """
             偶尔发现腾讯云OCR服务会出现
