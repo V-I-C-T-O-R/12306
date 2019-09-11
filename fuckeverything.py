@@ -1,9 +1,9 @@
 import copy
 import random
 import time
+
+from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_HAND
 from conf.urls_conf import loginUrls
-from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_MYSELF, \
-    CAPTCHA_CHECK_METHOD_THREE
 from configure import *
 from net import init_ip_pool
 from net.NetUtils import EasyHttp
@@ -44,18 +44,6 @@ def check_login():
         status, login = do_login()
         if not status:
             return False
-    return True
-
-def check_re_login():
-    response = EasyHttp.post_custom(loginUrls['normal']['conf'])
-    if not response or not response.json():
-        return False
-    resp = response.json()
-    login_status = resp.get('data').get('is_login')
-    Log.d('登录状态：%s' % login_status)
-    if 'Y' != login_status:
-        Log.d('登录状态已过期,重新请求')
-        return False
     return True
 
 def main():
@@ -101,10 +89,21 @@ def main():
             count += 1
             Log.v('第%d次访问12306网站' % count)
             print('-' * 40)
-            ticketDetails = Query.loopQuery(TRAIN_DATE, FROM_STATION, TO_STATION,
+            flag,ticketDetails = Query.loopQuery(TRAIN_DATE, FROM_STATION, TO_STATION,
                                             TrainUtils.passengerType2Desc(passengerTypeCode),
                                             TRAINS_NO,
-                                            seatTypesCode, PASSENGERS_ID, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL)
+                                            seatTypesCode, PASSENGERS_ID, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL,HEART_BEAT_PER_REQUEST_TIME)
+            #非登录状态有票,仅支持自动登录或第三方AI自动登录
+            if not flag:
+                if SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_HAND:
+                    Log.e("手动验证模式登录重试失败,请手动重试")
+                    return
+
+                status, login = do_login()
+                if not status:
+                    Log.e("自动验证模式登录重试失败自动登录失败,请手动重试")
+                    return
+
             Log.v('已为您查询到可用余票:%s' % ticketDetails)
 
             ticketDetails.passengersId = PASSENGERS_ID
@@ -120,14 +119,6 @@ def main():
                         continue
                     results_seat.append(random_seat)
                 seats_default.extend(results_seat)
-
-            #仅支持自动登录或第三方AI自动登录
-            status = check_re_login()
-            if not status and (SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_MYSELF or SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_THREE) :
-                status, login = do_login()
-                if not status:
-                    Log.e("自动登录失败,请手动重试")
-                    return
 
             if submit.submit(seats_default):
                 status, contents = submit.showSubmitInfoPretty()

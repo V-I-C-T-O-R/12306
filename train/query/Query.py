@@ -12,6 +12,7 @@ from conf.urls_conf import queryUrls
 from configure import QUERY_TICKET_REFERSH_INTERVAL
 from net.NetUtils import EasyHttp
 from train.TicketDetails import TicketDetails
+from train.query import check_re_login
 from utils import TrainUtils, deadline
 from utils.Log import Log
 
@@ -184,7 +185,7 @@ class Query(object):
     @staticmethod
     def loopQuery(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
                   seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[], POLICY_BILL=1,
-                  timeInterval=QUERY_TICKET_REFERSH_INTERVAL):
+                  timeInterval=QUERY_TICKET_REFERSH_INTERVAL,heart_beat_request_time = 3):
         count = 0
         base_query_url = queryUrls['query']['url']
         while True:
@@ -194,14 +195,20 @@ class Query(object):
                 continue
 
             count += 1
+
+            #标记是否登录已失效,heart_beat_request_time次发送一次心跳
+            flag = True
+            if count % heart_beat_request_time == 0:
+                status = check_re_login()
+                if not status:
+                    flag = False
             Log.v('正在为您第%d次刷票' % count + '，当前时间为:%s' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             for ticketDetails in Query.querySpec(count, base_query_url, trainDate, fromStation, toStation,
                                                  passengerType, trainsNo, seatTypes,
                                                  PASSENGERS_ID, POLICY_BILL):
                 if ticketDetails:
-                    return ticketDetails
+                    return flag,ticketDetails
             time.sleep(timeInterval)
-
 
 if __name__ == "__main__":
     # for ticket in Query.query('2017-12-31', '深圳北', '潮汕'):

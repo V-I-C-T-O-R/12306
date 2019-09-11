@@ -1,7 +1,7 @@
 import random
 
 import re
-#此方法摘自https://github.com/testerSunshine/12306
+#此方法摘自https://github.com/testerSunshine/12306,可惜调不通,登录302
 from net.NetUtils import EasyHttp
 
 
@@ -18,15 +18,17 @@ def request_alg_id(urlInfo):
 def get_hash_code_params():
     from collections import OrderedDict
     data = {
-        'adblock': '0',
+        'adblock': '1',
         'browserLanguage': 'en-US',
         'cookieEnabled': '1',
         'custID': '133',
         'doNotTrack': 'unknown',
         'flashVersion': '0',
         'javaEnabled': '0',
-        'jsFonts': 'c227b88b01f5c513710d4b9f16a5ce52',
-        'localCode': '3232236206',
+        # change
+        'jsFonts': '382b3eb7cfc5d30f1b59cb283d1acaf3',
+        # change
+        'localCode': '3232235885',
         'mimeTypes': '52d67b2a5aa5e031084733d5006cc664',
         'os': 'MacIntel',
         'platform': 'WEB',
@@ -39,51 +41,52 @@ def get_hash_code_params():
         'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.' + str(
             random.randint(
                 5000, 7000)) + '.0 Safari/537.36',
-        'webSmartID': 'f4e3b7b14cc647e30a6267028ad54c56',
+        #change
+        'webSmartID': '7484b4d443309cac29a8c080495fc1c0',
     }
     data_trans = {
-        'browserVersion': 'd435',
-        'touchSupport': 'wNLf',
-        'systemLanguage': 'e6OK',
-        'scrWidth': 'ssI5',
-        'openDatabase': 'V8vl',
-        'scrAvailSize': 'TeRS',
-        'hasLiedResolution': '3neK',
-        'hasLiedOs': 'ci5c',
-        'timeZone': 'q5aJ',
-        'userAgent': '0aew',
-        'userLanguage': 'hLzX',
-        'jsFonts': 'EOQP',
-        'scrAvailHeight': '88tV',
-        'browserName': '-UVA',
-        'cookieCode': 'VySQ',
-        'online': '9vyE',
-        'scrAvailWidth': 'E-lJ',
-        'flashVersion': 'dzuS',
-        'scrDeviceXDPI': '3jCe',
-        'srcScreenSize': 'tOHY',
-        'storeDb': 'Fvje',
-        'doNotTrack': 'VEek',
-        'mimeTypes': 'jp76',
-        'sessionStorage': 'HVia',
-        'cookieEnabled': 'VPIf',
-        'os': 'hAqN',
-        'hasLiedLanguages': 'j5po',
-        'hasLiedBrowser': '2xC5',
-        'webSmartID': 'E3gR',
-        'appcodeName': 'qT7b',
-        'javaEnabled': 'yD16',
-        'plugins': 'ks0Q',
-        'appMinorVersion': 'qBVW',
-        'cpuClass': 'Md7A',
-        'indexedDb': '3sw-',
-        'adblock': 'FMQw',
-        'localCode': 'lEnu',
-        'browserLanguage': 'q4f3',
-        'scrHeight': '5Jwy',
-        'localStorage': 'XM7l',
-        'historyList': 'kU5z',
-        'scrColorDepth': "qmyu"
+         'os': "hAqN",
+        'hasLiedResolution': "3neK",
+        'userLanguage': "hLzX",
+        'browserName': "-UVA",
+        'localCode': "lEnu",
+        'scrHeight': "5Jwy",
+        'browserLanguage': "q4f3",
+        'jsFonts': "EOQP",
+        'localStorage': "XM7l",
+        'historyList': "kU5z",
+        'scrAvailWidth': "E-lJ",
+        'webSmartID': "E3gR",
+        'browserVersion': "d435",
+        'scrDeviceXDPI': "3jCe",
+        'adblock': "FMQw",
+        'touchSupport': "wNLf",
+        'online': "9vyE",
+        'doNotTrack': "VEek",
+        'timeZone': "q5aJ",
+        'cookieEnabled': "VPIf",
+        'plugins': "ks0Q",
+        'srcScreenSize': "tOHY",
+        'cookieCode': "VySQ",
+        'scrAvailSize': "TeRS",
+        'appMinorVersion': "qBVW",
+        'cpuClass': "Md7A",
+        'flashVersion': "dzuS",
+        'indexedDb': "3sw-",
+        'appcodeName': "qT7b",
+        'openDatabase': "V8vl",
+        'javaEnabled': "yD16",
+        'storeDb': "Fvje",
+        'scrColorDepth': "qmyu",
+        'scrAvailHeight': "88tV",
+        'hasLiedLanguages': "j5po",
+        'mimeTypes': "jp76",
+        'userAgent': "0aew",
+        'sessionStorage': "HVia",
+        'hasLiedOs': "ci5c",
+        'systemLanguage': "e6OK",
+        'scrWidth': "ssI5",
+        'hasLiedBrowser': "2xC5"
     }
     data = OrderedDict(data)
     d = ''
