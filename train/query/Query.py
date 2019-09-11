@@ -195,7 +195,6 @@ class Query(object):
                 continue
 
             count += 1
-
             #标记是否登录已失效,heart_beat_request_time次发送一次心跳
             flag = True
             if count % heart_beat_request_time == 0:

@@ -1,4 +1,5 @@
 import copy
+import datetime
 import random
 import time
 
@@ -9,6 +10,7 @@ from net import init_ip_pool
 from net.NetUtils import EasyHttp
 from spider.get_free_proxy import GetFreeProxy
 from train.login.Login import Login
+from train.query import check_re_login
 from train.query.Query import Query
 from train.submit.Submit import Submit
 from utils import TrainUtils
@@ -46,7 +48,8 @@ def check_login():
             return False
     return True
 
-def main():
+def super_hero(love):
+    Log.v('启动***超级英雄***线程')
     #免费代理ip访问
     GetFreeProxy.getAllProxy(THREAD_POOL_SIZE, THREAD_OR_PROCESS, IS_REFASH_IP_POOL)
     init_ip_pool()
@@ -142,6 +145,29 @@ def main():
     login.loginOut()
     Log.d('注销登录成功')
 
+def girl_of_the_night(love):
+    Log.v('启动***休眠监控***线程')
+    count = 0
+    while 1:
+        now = datetime.datetime.now()
+        nowHour = now.hour
+        if nowHour >= 23 or nowHour < 6:
+            if count % HEART_BEAT_PER_REQUEST_TIME == 0:
+                check_re_login()
+            time.sleep(HEART_BEAT_PER_REQUEST_TIME >> 1)
+            count +=1
+            continue
+        # Log.e('非23点-6点,休眠%s秒'%(HEART_BEAT_PER_REQUEST_TIME << 1))
+        time.sleep(HEART_BEAT_PER_REQUEST_TIME << 1)
+
+def start_service():
+    import threadpool
+    pool = threadpool.ThreadPool(2)
+    reqs = threadpool.makeRequests(super_hero, [True])
+    [pool.putRequest(req) for req in reqs]
+    reqs = threadpool.makeRequests(girl_of_the_night, [True])
+    [pool.putRequest(req) for req in reqs]
+    pool.wait()
 
 if __name__ == '__main__':
-    main()
+    start_service()
