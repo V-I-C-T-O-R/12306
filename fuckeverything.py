@@ -79,7 +79,7 @@ def super_hero(love):
 
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
-
+    Log.d("订单详情:日期[%s]/区间[%s至%s]/车次[%s]"%(TRAIN_DATE,FROM_STATION,TO_STATION,','.join(TRAINS_NO)))
     count = 0
     while True:
         # 死循环一直查票，直到下单成功
