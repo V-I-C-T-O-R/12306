@@ -2,7 +2,7 @@ import copy
 import datetime
 import random
 import time
-
+from threading import Lock
 from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_HAND
 from conf.urls_conf import loginUrls
 from configure import *
@@ -79,7 +79,7 @@ def super_hero(love):
 
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
-    Log.d("订单详情:日期[%s]/区间[%s至%s]/车次[%s]"%(TRAIN_DATE,FROM_STATION,TO_STATION,','.join(TRAINS_NO)))
+    Log.d("订单详情:日期[%s]/区间[%s至%s]/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
     count = 0
     while True:
         # 死循环一直查票，直到下单成功
@@ -114,7 +114,7 @@ def super_hero(love):
             ticketDetails.tourFlag = TOUR_FLAG if TOUR_FLAG else 'dc'
             submit = Submit(ticketDetails)
             seats_default = copy.deepcopy(CHOOSE_SEATS)
-            if (ticketDetails.seatType == SEAT_TYPE[SeatName.FIRST_CLASS_SEAT] or ticketDetails.seatType == SeatName.SECOND_CLASS_SEAT) and not seats_default:
+            if (ticketDetails.seatType == SEAT_TYPE[SeatName.FIRST_CLASS_SEAT] or ticketDetails.seatType == SEAT_TYPE[SeatName.SECOND_CLASS_SEAT]) and not seats_default:
                 results_seat = []
                 for i in range(len(PASSENGERS_ID)):
                     random_seat = random.choice(NUM_SEAT)+random.choice(LETTER_SEAT)
@@ -144,11 +144,14 @@ def super_hero(love):
             Log.w(e)
     login.loginOut()
     Log.d('注销登录成功')
+    love.change_status(True)
 
 def girl_of_the_night(love):
     Log.v('启动***休眠监控***线程')
     count = 0
     while 1:
+        if love.get_my_love():
+            break
         now = datetime.datetime.now()
         nowHour = now.hour
         if nowHour >= 23 or nowHour < 6:
@@ -160,14 +163,28 @@ def girl_of_the_night(love):
         # Log.e('非23点-6点,休眠%s秒'%(HEART_BEAT_PER_REQUEST_TIME << 1))
         time.sleep(HEART_BEAT_PER_REQUEST_TIME << 1)
 
-def start_service():
+def start_service(love):
     import threadpool
     pool = threadpool.ThreadPool(2)
-    reqs = threadpool.makeRequests(super_hero, [True])
+    reqs = threadpool.makeRequests(super_hero, [love])
     [pool.putRequest(req) for req in reqs]
-    reqs = threadpool.makeRequests(girl_of_the_night, [True])
+    reqs = threadpool.makeRequests(girl_of_the_night, [love])
     [pool.putRequest(req) for req in reqs]
     pool.wait()
 
+class Love():
+    def __init__(self,love,hero):
+        self.love = love
+        self.hero = hero
+
+    def change_status(self,status):
+        self.hero.acquire()
+        self.love = status
+        self.hero.release()
+
+    def get_my_love(self):
+        return self.love
+
 if __name__ == '__main__':
-    start_service()
+    love = Love(False,Lock())
+    start_service(love)
