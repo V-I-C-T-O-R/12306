@@ -11,6 +11,6 @@ def check_re_login():
     login_status = resp.get('data').get('is_login')
     Log.d('登录状态：%s' % login_status)
     if 'Y' != login_status:
-        Log.d('登录状态已过期,重新请求')
+        Log.d('登录状态已过期')
         return False
     return True
