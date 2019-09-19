@@ -163,23 +163,25 @@ class Query(object):
     @staticmethod
     def querySpec(flag, base_url, trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
                   seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[], POLICY_BILL=1):
-        for ticket in Query.query(flag, base_url, trainDate, fromStation, toStation, passengerType):
-            # filter trainNo
-            if not TrainUtils.filterTrain(ticket, trainsNo):
-                continue
-            # filter seat
-            for seatTypeName, seatTypeProperty in TrainUtils.seatWhich(seatTypes, ticket):
-                if seatTypeProperty and seatTypeProperty != '无':
-                    Log.v('%s %s: %s' % (ticket.trainNo, seatTypeName, seatTypeProperty))
-                    try:
-                        remind_num = int(seatTypeProperty)
-                    except Exception as e:
-                        remind_num = 100
-                    if POLICY_BILL == POLICY_BILL_ALL and len(PASSENGERS_ID) > remind_num:
-                        break
-                    ticket.seatType = SEAT_TYPE[seatTypeName]
-                    ticket.remindNum = remind_num
-                    yield ticket
+        for custom_date in trainDate:
+            for ticket in Query.query(flag, base_url, custom_date, fromStation, toStation, passengerType):
+                # filter trainNo
+                if not TrainUtils.filterTrain(ticket, trainsNo):
+                    continue
+                # filter seat
+                for seatTypeName, seatTypeProperty in TrainUtils.seatWhich(seatTypes, ticket):
+                    if seatTypeProperty and seatTypeProperty != '无':
+                        Log.v('%s %s %s: %s' % (custom_date, ticket.trainNo, seatTypeName, seatTypeProperty))
+                        try:
+                            remind_num = int(seatTypeProperty)
+                        except Exception as e:
+                            remind_num = 100
+                        if POLICY_BILL == POLICY_BILL_ALL and len(PASSENGERS_ID) > remind_num:
+                            break
+                        ticket.seatType = SEAT_TYPE[seatTypeName]
+                        ticket.remindNum = remind_num
+                        ticket.custom_date = custom_date
+                        yield ticket
         return []
 
     @staticmethod

@@ -109,7 +109,8 @@ def super_hero(love):
                     Log.e("自动验证模式登录重试失败自动登录失败,请手动重试")
                     return
 
-            Log.v('已为您查询到可用余票:%s' % ticketDetails)
+            # Log.v('已为您查询到可用余票:%s' % ticketDetails)
+            Log.v('已为您查询到可用余票:[日期:%s,车次:%s,出发站:%s,到达站:%s,出发时间:%s,到达时间:%s]' % (ticketDetails.custom_date,ticketDetails.trainNo,ticketDetails.fromStation,ticketDetails.toStation,ticketDetails.leaveTime,ticketDetails.arriveTime))
 
             ticketDetails.passengersId = PASSENGERS_ID
             ticketDetails.ticketTypeCodes = passengerTypeCode
