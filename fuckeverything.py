@@ -26,7 +26,6 @@ def do_login():
     result, msg = login.login(USER_NAME, USER_PWD, SELECT_AUTO_CHECK_CAPTHCA)
     EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
     if not Utils.check(result, msg):
-        Log.e(msg)
         return False,login
     Log.v('%s,登录成功' % msg)
     return True,login
@@ -63,15 +62,18 @@ def super_hero(love):
         Log.d('cookie登录已过期,重新请求')
         status,login = do_login()
         if not status:
+            love.change_status(True)
             return
     else:
         if not ('uamtk' in cookies and 'RAIL_DEVICEID' in cookies):
             status,login = do_login()
             if not status:
+                love.change_status(True)
                 return
         else:
             status = check_login()
             if not status:
+                love.change_status(True)
                 return
             login = Login()
             login._urlInfo = loginUrls['normal']
