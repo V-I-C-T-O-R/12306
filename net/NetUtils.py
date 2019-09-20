@@ -11,7 +11,6 @@ from conf.urls_conf import queryUrls
 from define.UserAgent import USER_AGENT
 from net import ips
 
-
 def sendLogic(func):
     def wrapper(*args, **kw):
         for count in range(5):
@@ -77,17 +76,18 @@ class EasyHttp(object):
                                                       url=urlInfo['url'],
                                                       params=params,
                                                       data=data,
-                                                      timeout=10,
+                                                      timeout=3,
                                                       allow_redirects=False,
                                                       **kwargs)
             else:
+                proxy_address = random.choice(ips)
                 response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       params=params,
                                                       data=data,
                                                       #python3发现proxies写成{"https": "https://{}"}的形式没法访问,笑哭-_-
-                                                      proxies={"http": "http://{}".format(random.choice(ips)[0])},
-                                                      timeout=10,
+                                                      proxies={"http": "http://{}".format(proxy_address[0])},
+                                                      timeout=3,
                                                       allow_redirects=False,
                                                       **kwargs)
             if response.status_code == requests.codes.ok:
@@ -99,7 +99,8 @@ class EasyHttp(object):
                         return response.text
                 return response.json()
         except:
-            pass
+            if ips:
+                ips.remove(proxy_address)
         return None
 
     @staticmethod
@@ -121,7 +122,7 @@ class EasyHttp(object):
             response = EasyHttp.__session.request(method='GET',
                                        url=url,
                                        # headers=headers,
-                                       timeout=10,
+                                       timeout=3,
                                        allow_redirects=False,
                                        **kwargs)
             if response.status_code == requests.codes.ok:
@@ -150,7 +151,7 @@ class EasyHttp(object):
         try:
             response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
-                                                      timeout=10,
+                                                      timeout=3,
                                                       allow_redirects=False
                                                     )
         except Exception as e:
@@ -168,16 +169,19 @@ class EasyHttp(object):
                 response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       data=data,
-                                                      timeout=10,
+                                                      timeout=3,
                                                       allow_redirects=False)
             else:
+                proxy_address = random.choice(ips)
                 response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       data=data,
-                                                      proxies={"http": "http://{}".format(random.choice(ips)[0])},
-                                                      timeout=10,
+                                                      proxies={"http": "http://{}".format(proxy_address[0])},
+                                                      timeout=3,
                                                       allow_redirects=False)
         except Exception as e:
+            if ips:
+                ips.remove(proxy_address)
             return None
         return response
 
