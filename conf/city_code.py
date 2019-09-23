@@ -2846,7 +2846,8 @@ CITY_NAME = [
     "枣庄东",
     "卓资东",
     "郑州东",
-    "株洲南"
+    "株洲南",
+    "香港红磡"
 ]
 CITY_CODE = [
     "VAP",
@@ -5696,7 +5697,8 @@ CITY_CODE = [
     "ZNK",
     "ZDC",
     "ZAF",
-    "KVQ"
+    "KVQ",
+    "JQO"
 ]
 
 
@@ -5713,7 +5715,7 @@ import re
 
 
 class CityCode(object):
-    __url = r'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9040'
+    __url = r'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9110'
 
     def parse(self):
         content = NetUtils.EasyHttp.get(CityCode.__url, 10)
@@ -5730,4 +5732,5 @@ if __name__ == '__main__':
     for cityName, cityCode in cityCodeContent:
         # print('"' + cityName + '",')
         # CityCode.save('CityName.txt', cityName)
-        print('"' + cityCode + '",')
+        if cityCode == 'JQO' or cityCode == 'BXP' or cityCode == 'GGQ' or cityCode == 'CSQ':
+            print(cityName,'"' + cityCode + '",')

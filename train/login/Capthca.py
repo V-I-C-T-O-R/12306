@@ -50,7 +50,8 @@ class Captcha(object):
             '_': int(time.time() * 1000)
         }
         jsonRet = EasyHttp.send(loginUrls['normal']['captchaCheck'], params=data)
-        # print('captchaCheck: %s' % jsonRet)
+        if not jsonRet:
+            return False
 
         def verify(response):
             return Captcha.__REPONSE_NORMAL_CDOE_SUCCESSFUL == response[

@@ -81,10 +81,9 @@ def super_hero(love):
 
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
-    Log.d("订单详情:日期[%s]/区间[%s至%s]/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
+    Log.d("订单详情:日期[%s]/区间[%s至%s]/%s/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,'出发时间段['+'~'.join(leave_time)+']' if leave_time else '',','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
     count = 0
     while True:
-        # 死循环一直查票，直到下单成功
         try:
             nowTime, status = deadline.do_fix_time()
             if status:
@@ -97,7 +96,7 @@ def super_hero(love):
             flag,ticketDetails = Query.loopQuery(TRAIN_DATE, FROM_STATION, TO_STATION,
                                             TrainUtils.passengerType2Desc(passengerTypeCode),
                                             TRAINS_NO,
-                                            seatTypesCode, PASSENGERS_ID, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL,HEART_BEAT_PER_REQUEST_TIME)
+                                            seatTypesCode, PASSENGERS_ID,leave_time, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL,HEART_BEAT_PER_REQUEST_TIME)
             #非登录状态有票,仅支持自动登录或第三方AI自动登录
             if not flag:
                 if SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_HAND:
@@ -159,7 +158,9 @@ def girl_of_the_night(love):
         nowHour = now.hour
         if nowHour >= 23 or nowHour < 6:
             if count % HEART_BEAT_PER_REQUEST_TIME == 0:
-                check_re_login()
+                status = check_re_login()
+                if status:
+                    EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
             time.sleep(HEART_BEAT_PER_REQUEST_TIME >> 1)
             count +=1
             continue

@@ -62,15 +62,18 @@ class Submit(object):
             '_json_att': ''
         }
         extra_info = copy.deepcopy(self._urlInfo['getExtraInfo'])
-        extra_info['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
+        # extra_info['headers']['Referer'] = self._urlInfo['getExtraInfo']['headers']['Referer']+ '?linktypeid='+self.__ticket.tourFlag
         response = EasyHttp.post_custom(extra_info,data=formData)
 
         if response and response.status_code == requests.codes.ok:
             html = response.text
+            if html.find('系统忙，请稍后重试') != -1:
+                Log.e('系统忙，请稍后重试...')
+                return False
         else:
             html = None
         # html = EasyHttp.send(self._urlInfo['getExtraInfo'])
-        if not Utils.check(html, 'getExtraInfoUrl: failed to visit %s' % self._urlInfo['getExtraInfo']['url']):
+        if not Utils.check(html, 'failed to visit %s' % self._urlInfo['getExtraInfo']['url']):
             return False
         self.__ticket.repeatSubmitToken = getRepeatSubmitToken(html)
 
@@ -256,7 +259,6 @@ class Submit(object):
         if not Utils.check(status, 'getPassengerDTOs: %s' % msg):
             return False
         Log.v('获取乘客信息成功!')
-
         passengersDetails = []
         if len(self.__ticket.passengersId) >= self.__ticket.remindNum:
             for i in range(self.__ticket.remindNum):

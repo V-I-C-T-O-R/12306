@@ -9,7 +9,7 @@ from conf.city_code import city2code, code2city
 from conf.constant import PASSENGER_TYPE_ADULT, SEAT_TYPE
 from conf.constant import POLICY_BILL_ALL
 from conf.urls_conf import queryUrls
-from configure import QUERY_TICKET_REFERSH_INTERVAL
+from configure import QUERY_TICKET_REFERSH_INTERVAL, COOKIE_SAVE_ADDRESS
 from net.NetUtils import EasyHttp
 from train.TicketDetails import TicketDetails
 from train.query import check_re_login
@@ -162,12 +162,18 @@ class Query(object):
 
     @staticmethod
     def querySpec(flag, base_url, trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
-                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[], POLICY_BILL=1):
+                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[],leave_period=[], POLICY_BILL=1):
         for custom_date in trainDate:
             for ticket in Query.query(flag, base_url, custom_date, fromStation, toStation, passengerType):
                 # filter trainNo
                 if not TrainUtils.filterTrain(ticket, trainsNo):
                     continue
+                # filter leave time
+                try:
+                    if leave_period and (ticket.leaveTime < leave_period[0] or ticket.leaveTime > leave_period[1]):
+                        continue
+                except Exception as e:
+                    pass
                 # filter seat
                 for seatTypeName, seatTypeProperty in TrainUtils.seatWhich(seatTypes, ticket):
                     if seatTypeProperty and seatTypeProperty != '无':
@@ -186,7 +192,7 @@ class Query(object):
 
     @staticmethod
     def loopQuery(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
-                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[], POLICY_BILL=1,
+                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[],leave_period=[], POLICY_BILL=1,
                   timeInterval=QUERY_TICKET_REFERSH_INTERVAL,heart_beat_request_time = 3):
         count = 0
         base_query_url = queryUrls['query']['url']
@@ -203,10 +209,12 @@ class Query(object):
                 status = check_re_login()
                 if not status:
                     flag = False
+                else:
+                    EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
             Log.v('正在为您第%d次刷票' % count + '，当前时间为:%s' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             for ticketDetails in Query.querySpec(count, base_query_url, trainDate, fromStation, toStation,
                                                  passengerType, trainsNo, seatTypes,
-                                                 PASSENGERS_ID, POLICY_BILL):
+                                                 PASSENGERS_ID,leave_period, POLICY_BILL):
                 if ticketDetails:
                     return flag,ticketDetails
             time.sleep(timeInterval)

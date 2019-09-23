@@ -1,5 +1,7 @@
 # 必填
 # 用户名
+import os
+
 USER_NAME = '******@qq.com'
 # 密码
 USER_PWD = '******'
@@ -17,7 +19,9 @@ TOUR_FLAG = 'dc'
 POLICY_BILL = 1
 
 #cookie存放地址
-COOKIE_SAVE_ADDRESS = 'cookie.txt'
+COOKIE_SAVE_ADDRESS = os.getcwd()+'/cookie.txt'
+#发车时间段
+leave_time = ['06:00','18:00']
 
 # 选填
 # 车次 eg:['G6343','G6212']
@@ -32,10 +36,10 @@ PASSENGER_TYPE_CODE = '1'
 CHOOSE_SEATS = []
 
 #心跳查询间隔(表示多少个QUERY_TICKET_REFERSH_INTERVAL去访问保持在线状态)
-HEART_BEAT_PER_REQUEST_TIME = 3
+HEART_BEAT_PER_REQUEST_TIME = 5
 
 # 刷票间隔(单位:s)
-QUERY_TICKET_REFERSH_INTERVAL = 0.3
+QUERY_TICKET_REFERSH_INTERVAL = 0.4
 
 #选择识别验证码的方式,默认1方式
 # 1表示手动,2表示自动识别(调用第三方接口,已失效),3表示使用本工具自己捣鼓的验证码识别方式(配置百度ai/tencent ai账号)
