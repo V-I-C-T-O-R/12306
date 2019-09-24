@@ -2847,7 +2847,8 @@ CITY_NAME = [
     "卓资东",
     "郑州东",
     "株洲南",
-    "香港红磡"
+    "香港红磡",
+    "宜宾西"
 ]
 CITY_CODE = [
     "VAP",
@@ -5698,7 +5699,8 @@ CITY_CODE = [
     "ZDC",
     "ZAF",
     "KVQ",
-    "JQO"
+    "JQO",
+    "YXE"
 ]
 
 
@@ -5732,5 +5734,5 @@ if __name__ == '__main__':
     for cityName, cityCode in cityCodeContent:
         # print('"' + cityName + '",')
         # CityCode.save('CityName.txt', cityName)
-        if cityCode == 'JQO' or cityCode == 'BXP' or cityCode == 'GGQ' or cityCode == 'CSQ':
+        if cityCode == 'YXE' or cityCode == 'BXP' or cityCode == 'GGQ' or cityCode == 'CSQ':
             print(cityName,'"' + cityCode + '",')
