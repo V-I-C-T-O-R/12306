@@ -35,8 +35,8 @@ PASSENGER_TYPE_CODE = '1'
 #解释：如果你有三个人，那么你就可以选择['1A','2A','2B']，这里的1和2代表的是排数(选座默认出现两排图形位置)。也就是'1A','2A','2B'三个元素代表3个人，A和B代表座位的位置，1和2代表的是排数
 CHOOSE_SEATS = []
 
-#心跳查询间隔(表示每多少秒去访问保持在线状态,单位:s)
-HEART_BEAT_PER_REQUEST_TIME = 5
+#心跳查询间隔(表示每多少秒去访问保持在线状态,单位:s,默认30)
+HEART_BEAT_PER_REQUEST_TIME = 30
 
 # 刷票间隔(单位:s)
 QUERY_TICKET_REFERSH_INTERVAL = 0.4
