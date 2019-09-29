@@ -62,23 +62,24 @@ def super_hero(love):
         Log.d('cookie登录已过期,重新请求')
         status,login = do_login()
         if not status:
-            love.change_status(True)
+            love.change_offline_status(True)
             return
     else:
         if not ('uamtk' in cookies and 'RAIL_DEVICEID' in cookies):
             status,login = do_login()
             if not status:
-                love.change_status(True)
+                love.change_offline_status(True)
                 return
         else:
             status = check_login()
             if not status:
-                love.change_status(True)
+                love.change_offline_status(True)
                 return
             login = Login()
             login._urlInfo = loginUrls['normal']
             Log.v('已登录状态,开始寻找小票票')
 
+    love.change_login_status(True)
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
     Log.d("订单详情:日期[%s]/区间[%s至%s]%s/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,'/出发时间段['+'~'.join(leave_time)+']' if leave_time else '',','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
@@ -93,19 +94,20 @@ def super_hero(love):
             count += 1
             Log.v('第%d次访问12306网站' % count)
             print('-' * 40)
-            flag,ticketDetails = Query.loopQuery(TRAIN_DATE, FROM_STATION, TO_STATION,
+            ticketDetails = Query.loopQuery(TRAIN_DATE, FROM_STATION, TO_STATION,
                                             TrainUtils.passengerType2Desc(passengerTypeCode),
                                             TRAINS_NO,
-                                            seatTypesCode, PASSENGERS_ID,leave_time, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL,HEART_BEAT_PER_REQUEST_TIME)
-            #非登录状态有票,仅支持自动登录或第三方AI自动登录
-            if not flag:
+                                            seatTypesCode, PASSENGERS_ID,leave_time, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL)
+            status = check_re_login()
+            if not status:
+                #非登录状态有票,仅支持自动登录或第三方AI自动登录
                 if SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_HAND:
-                    Log.e("手动验证模式登录重试失败,请手动重试")
-                    return
+                    Log.e("手动模式登录状态已过期,请手动重试...")
 
                 status, login = do_login()
                 if not status:
-                    Log.e("自动验证模式登录重试失败自动登录失败,请手动重试")
+                    Log.e("登录状态已过期,重试登录失败")
+                    love.change_offline_status(True)
                     return
 
             # Log.v('已为您查询到可用余票:%s' % ticketDetails)
@@ -146,26 +148,20 @@ def super_hero(love):
             Log.w(e)
     login.loginOut()
     Log.d('注销登录成功')
-    love.change_status(True)
+    love.change_offline_status(True)
 
 def girl_of_the_night(love):
     Log.v('启动***休眠监控***线程')
-    count = 0
     while 1:
         if love.get_my_love():
             break
-        now = datetime.datetime.now()
-        nowHour = now.hour
-        if nowHour >= 23 or nowHour < 6:
-            if count % HEART_BEAT_PER_REQUEST_TIME == 0:
-                status = check_re_login()
-                if status:
-                    EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
-            time.sleep(HEART_BEAT_PER_REQUEST_TIME >> 1)
-            count +=1
-            continue
-        # Log.e('非23点-6点,休眠%s秒'%(HEART_BEAT_PER_REQUEST_TIME << 1))
-        time.sleep(HEART_BEAT_PER_REQUEST_TIME << 1)
+        if love.get_login_status():
+            status = check_re_login()
+            if status:
+                EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
+        time.sleep(HEART_BEAT_PER_REQUEST_TIME)
+
+    Log.v('****** 12306 终止 ******')
 
 def start_service(love):
     import threadpool
@@ -177,18 +173,28 @@ def start_service(love):
     pool.wait()
 
 class Love():
-    def __init__(self,love,hero):
+    def __init__(self,love,hero,is_login):
         self.love = love
         self.hero = hero
+        self.is_login = is_login
 
-    def change_status(self,status):
+    def change_offline_status(self,status):
         self.hero.acquire()
         self.love = status
+        self.hero.release()
+
+    def change_login_status(self,status):
+        self.hero.acquire()
+        self.is_login = status
         self.hero.release()
 
     def get_my_love(self):
         return self.love
 
+    def get_login_status(self):
+        return self.is_login
+
 if __name__ == '__main__':
-    love = Love(False,Lock())
+    Log.v('****** 12306 启动 ******')
+    love = Love(False,Lock(),False)
     start_service(love)
