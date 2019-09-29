@@ -6,13 +6,13 @@ def check_login_magic(func):
     def wrapper(*args, **kw):
         reslut = False
         msg = ''
-        for count in range(3):
+        for count in range(4):
             reslut, msg = func(*args, **kw)
             if reslut:
                 break
-            #目测12306拉取状态最少3次,最多次数暂定为3
-            if count > 1:
-                Log.w(msg)
+            #目测12306拉取状态最少3次,最多次数暂定为4
+            if count > 2:
+                Log.d(msg)
         return reslut, msg
 
     return wrapper
