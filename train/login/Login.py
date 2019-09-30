@@ -126,15 +126,6 @@ class Login(object):
             return False, 'uamtk failed'
         return self._uamauthclient(apptk)
 
-    def isLogin(self):
-        formData = {
-            '_json_att': ''
-        }
-        jsonRet = EasyHttp.send(self._urlInfo['checkUser'])
-        Log.d('checkUser: %s' % jsonRet)
-        return jsonRet['data']['flag'] if jsonRet and 'data' in jsonRet and 'flag' in jsonRet[
-            'data'] else False
-
     def loginOut(self):
         EasyHttp.send(self._urlInfo['loginOut'])
         self._init()

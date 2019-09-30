@@ -1,16 +1,13 @@
 import copy
-import datetime
-import random
 import time
 from threading import Lock
-from conf.constant import SEAT_TYPE, SeatName, NUM_SEAT, LETTER_SEAT, CAPTCHA_CHECK_METHOD_HAND
-from conf.urls_conf import loginUrls
+from conf.constant import SEAT_TYPE, CAPTCHA_CHECK_METHOD_HAND
 from configure import *
 from net import init_ip_pool
 from net.NetUtils import EasyHttp
 from spider.get_free_proxy import GetFreeProxy
 from train.login.Login import Login
-from train.query import check_re_login
+from train.query import check_user_login
 from train.query.Query import Query
 from train.submit.Submit import Submit
 from utils import TrainUtils
@@ -45,13 +42,13 @@ def super_hero(love):
             love.change_offline_status(True)
             return
     else:
-        status,_ = check_re_login()
+        status,_ = check_user_login()
         if not status:
             status, login = do_login()
             if not status:
                 love.change_offline_status(True)
                 return
-        login = Login()
+
         Log.v('已登录状态,开始寻找小票票')
 
     love.change_login_status(True)
@@ -73,7 +70,7 @@ def super_hero(love):
                                             TrainUtils.passengerType2Desc(passengerTypeCode),
                                             TRAINS_NO,
                                             seatTypesCode, PASSENGERS_ID,leave_time, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL)
-            status = check_re_login()
+            status,_ = check_user_login()
             if not status:
                 #非登录状态有票,仅支持自动登录或第三方AI自动登录
                 if SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_HAND:
@@ -122,7 +119,7 @@ def girl_of_the_night(love):
         if love.get_my_love():
             break
         if love.get_login_status():
-            status = check_re_login()
+            status,_ = check_user_login()
             if status:
                 EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
         time.sleep(HEART_BEAT_PER_REQUEST_TIME)

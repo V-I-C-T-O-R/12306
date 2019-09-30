@@ -14,6 +14,7 @@ from conf.urls_conf import submitUrls
 from define.UserAgent import FIREFOX_USER_AGENT
 from net import NetUtils
 from net.NetUtils import EasyHttp
+from train.query import check_user_login
 from train.submit.PassengerDetails import PassengerDetails
 from utils import TrainUtils
 from utils import Utils
@@ -240,15 +241,17 @@ class Submit(object):
             '_json_att': ''
         }
         check_user = copy.deepcopy(self._urlInfo['checkUser'])
-        check_user['headers']['Referer'] = self._urlInfo['checkUser']['headers']['Referer']+ '?linktypeid='+tourFlag
+        # check_user['headers']['Referer'] = self._urlInfo['checkUser']['headers']['Referer']+ '?linktypeid='+tourFlag
         jsonRet = EasyHttp.post_custom(check_user,data = formData)
         return True,jsonRet.text
-        # Log.d('checkUser: %s' % jsonRet)
 
     # seatType:商务座(9),特等座(P),一等座(M),二等座(O),高级软卧(6),软卧(4),硬卧(3),软座(2),硬座(1),无座(1)
     # ticket_type_codes:ticketInfoForPassengerForm['limitBuySeatTicketDTO']['ticket_type_codes']:(成人票:1,儿童票:2,学生票:3,残军票:4)
     def submit(self,choose_seat):
-        self._check_user(self.__ticket.tourFlag)
+        # self._check_user(self.__ticket.tourFlag)
+        # status,_ = check_user_login()
+        # if not status:
+        #     return False
 
         status, msg = self._submitOrderRequest(self.__ticket.tourFlag)
         if not Utils.check(status, 'submitOrderRequesst: %s' % msg):
