@@ -52,7 +52,6 @@ def super_hero(love):
                 love.change_offline_status(True)
                 return
         login = Login()
-        login._urlInfo = loginUrls['normal']
         Log.v('已登录状态,开始寻找小票票')
 
     love.change_login_status(True)
