@@ -80,7 +80,7 @@ def cut_image(dir_address,img_name):
     if im is None:
         Log.w("该图片{ %s }处理异常: " % img_name)
         return
-    all_pic = dir_address + '/pic'
+    all_pic = dir_address + 'pic'
     write_image(get_text(im), os.path.join(all_pic, img_name))
     num = 1
     sub_name = img_name.split('.')
@@ -93,7 +93,6 @@ def cut_image(dir_address,img_name):
     if IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_BAIDU:
         image = ImageClassify(BAIDU_APP_ID, BAIDU_API_KEY, BAIDU_SECRET_ID)
         captcha_name = image.resolve_words(os.path.join(all_pic, img_name)) or ''
-        pass
     elif IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_TENCENT:
         image = TencentAI(TENCENT_APP_ID, TENCENT_SECRET_KEY)
         captcha_name = image.resolve_words(os.path.join(all_pic, img_name)) or ''
@@ -109,7 +108,6 @@ def cut_image(dir_address,img_name):
         index = int(i.split('.')[0].split('_')[1])-1
         if IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_BAIDU:
             resolve_name = image.resolve_image(c_path) or ''
-            pass
         elif IMAGE_OCR_SERVICE_CHOOSE == IMAGE_OCR_SERVICE_TENCENT:
             resolve_name = image.resolve_image(os.path.join(all_pic, img_name)) or ''
 

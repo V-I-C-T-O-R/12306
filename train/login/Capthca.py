@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 from io import BytesIO
@@ -6,7 +7,6 @@ import requests
 import time
 from PIL import Image
 
-from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
 from conf.urls_conf import loginUrls, autoVerifyUrls
 from net.NetUtils import EasyHttp
 from train.login import damatuWeb
@@ -19,28 +19,20 @@ class Captcha(object):
     __REPONSE_OHTER_CDOE_SUCCESSFUL = '1'
     __CAPTCHA_PATH = 'captcha.jpg'
 
-    def getCaptcha(self, type=TYPE_LOGIN_NORMAL_WAY):
-        urlInfo = loginUrls['other']['captcha'] if type == TYPE_LOGIN_OTHER_WAY else loginUrls['normal']['captcha']
+    def getCaptcha(self):
         Log.v('正在获取验证码...')
-        return EasyHttp.send(urlInfo)
+        urlInfo = loginUrls['normal']['loginCaptchaCode']
 
-    def check(self, results, type=TYPE_LOGIN_NORMAL_WAY):
-        if type == TYPE_LOGIN_OTHER_WAY:
-            return self._checkRandCodeAnsyn(results)
+        response = EasyHttp.send(urlInfo)
+        if response and response['result_code'] != '0':
+            Log.v('获取验证码失败')
+            return None
+
+        img_base64 = base64.b64decode(response['image'])
+        return img_base64
+
+    def check(self, results):
         return self._captchaCheck(results)
-
-    def _checkRandCodeAnsyn(self, results):
-        formData = {
-            'randCode': results,
-            'rand': 'sjrand',
-        }
-        jsonRet = EasyHttp.send(loginUrls['other']['captchaCheck'], data=formData)
-        print('checkRandCodeAnsyn: %s' % jsonRet)
-
-        def verify(response):
-            return response['status'] and Captcha.__REPONSE_OHTER_CDOE_SUCCESSFUL == response['data']['result']
-
-        return verify(jsonRet)
 
     def _captchaCheck(self, results):
         data = {
@@ -59,8 +51,8 @@ class Captcha(object):
 
         return verify(jsonRet)
 
-    def verifyCaptchaByClound(self, type=TYPE_LOGIN_NORMAL_WAY):
-        captchaContent = self.getCaptcha(type)
+    def verifyCaptchaByClound(self):
+        captchaContent = self.getCaptcha()
         if captchaContent:
             FileUtils.saveBinary(Captcha.__CAPTCHA_PATH, captchaContent)
         else:
@@ -72,10 +64,10 @@ class Captcha(object):
         return results, self.check(results)
 
     # 通过人眼手动识别12306验证码
-    def verifyCaptchaByHand(self, type=TYPE_LOGIN_NORMAL_WAY):
+    def verifyCaptchaByHand(self):
         img = None
         try:
-            img = Image.open(BytesIO(self.getCaptcha(type)))
+            img = Image.open(BytesIO(self.getCaptcha()))
             img.show()
             Log.v(
                 """ 
@@ -92,7 +84,7 @@ class Captcha(object):
                 img.close()
         results = self.__indexTransCaptchaResults(results)
         Log.v('验证码坐标: %s' % results)
-        return results, self.check(results, type)
+        return results, self.check(results)
 
     def __indexTransCaptchaResults(self, indexes, sep=r','):
         coordinates = ['31, 35', '116, 46', '191, 24', '243, 50', '22, 114', '117, 94', '167, 120', '251, 105']
@@ -146,20 +138,17 @@ class Captcha(object):
             return None, False
         return results, self._captchaAutoCheck(results)
 
-    def verifyCodeAutoByMyself(self,type=TYPE_LOGIN_NORMAL_WAY):
+    def verifyCodeAutoByMyself(self):
         try:
-            urlInfo = loginUrls['other']['captcha'] if type == TYPE_LOGIN_OTHER_WAY else loginUrls['normal']['captcha']
-            Log.v('正在获取验证码...')
-
-            response = EasyHttp.send(urlInfo)
+            img_base64 = self.getCaptcha()
             address = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/image_captcha/'
 
-            byte_stream = BytesIO(response)
+            byte_stream = BytesIO(img_base64)
             roiImg = Image.open(byte_stream)  # Image打开二进制流Byte字节流数据
             imgByteArr = BytesIO()  # 创建一个空的Bytes对象
-            roiImg.save(imgByteArr, format='PNG')  # PNG就是图片格式，我试过换成JPG/jpg都不行
+            roiImg.save(imgByteArr, format='PNG') # PNG就是图片格式，试过换成JPG/jpg都不行
             imgByteArr = imgByteArr.getvalue()  # 这个就是保存的二进制流
-            file_name = '1.jpg'
+            file_name = '1.png'
             file_path = address + file_name
             # 下面这一步只是本地测试， 可以直接把imgByteArr，当成参数上传到七牛云
             with open(file_path, "wb") as f:
@@ -170,7 +159,6 @@ class Captcha(object):
             results = self.__indexTransCaptchaResults(results)
 
         except Exception as e:
-            Log.w(e)
             return None, False
         return results, self._captchaAutoCheck(results)
 

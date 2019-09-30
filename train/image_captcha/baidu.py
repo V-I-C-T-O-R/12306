@@ -23,26 +23,33 @@ class ImageClassify:
             return fp.read()
 
     def resolve_image(self,file_path):
-        image = self._get_file_content(file_path)
-        contents = self.image_client.advancedGeneral(image)
-        result = contents.get('result')[0]
+        try:
+            image = self._get_file_content(file_path)
+            contents = self.image_client.advancedGeneral(image)
+            result = contents.get('result')[0]
+        except Exception as e:
+            return ''
         return result.get('keyword')
 
     def resolve_words(self,file_path):
-        words = self._get_file_content(file_path)
-        contents = self.words_client.basicGeneral(words)
-        result = contents.get('words_result')[0]
+
+        try:
+            words = self._get_file_content(file_path)
+            contents = self.words_client.basicGeneral(words)
+            result = contents.get('words_result')[0]
+        except Exception as e:
+            return ''
         return result.get('words')
 
 if __name__ == '__main__':
 
     image = ImageClassify(BAIDU_APP_ID,BAIDU_API_KEY,BAIDU_SECRET_ID)
-    image.resolve_words('./pic/1.jpg')
-    image.resolve_image('./pic/1_1.jpg')
-    image.resolve_image('./pic/1_2.jpg')
-    image.resolve_image('./pic/1_3.jpg')
-    image.resolve_image('./pic/1_4.jpg')
-    image.resolve_image('./pic/1_5.jpg')
-    image.resolve_image('./pic/1_6.jpg')
-    image.resolve_image('./pic/1_7.jpg')
-    image.resolve_image('./pic/1_8.jpg')
+    image.resolve_words('./pic/1.png')
+    image.resolve_image('./pic/1_1.png')
+    image.resolve_image('./pic/1_2.png')
+    image.resolve_image('./pic/1_3.png')
+    image.resolve_image('./pic/1_4.png')
+    image.resolve_image('./pic/1_5.png')
+    image.resolve_image('./pic/1_6.png')
+    image.resolve_image('./pic/1_7.png')
+    image.resolve_image('./pic/1_8.png')

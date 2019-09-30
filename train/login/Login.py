@@ -7,13 +7,10 @@ import requests
 
 from conf.urls_conf import loginUrls
 from conf.constant import CAPTCHA_CHECK_METHOD_HAND, CAPTCHA_CHECK_METHOD_THREE
-from conf.constant import TYPE_LOGIN_NORMAL_WAY, TYPE_LOGIN_OTHER_WAY
 from net.NetUtils import EasyHttp
 from train.login.Capthca import Captcha
 from utils import Utils
 from utils.Log import Log
-from utils.device_code import request_alg_id, get_hash_code_params
-
 
 def loginLogic(func):
     def wrapper(*args, **kw):
@@ -78,38 +75,28 @@ class Login(object):
             else 'uamauthclient failed'
 
     def login(self, userName, userPwd, autoCheck=2):
-        # 登录有两种api
-        # for count in range(2):
-        #     result, msg = self._login(userName, userPwd, autoCheck, type=(count % 2))
-        #     if Utils.check(result, msg):
-        #         return result, msg
-        # return False, '登录失败'
+        self._urlInfo = loginUrls['normal']
+        status, msg = self._login_init()
+        if not status:
+            return status, msg
+        self._uamtk_static()
 
-        #屏蔽掉第二种api
-        result, msg = self._login(userName, userPwd, autoCheck, type = 0)
+        result, msg = self._login(userName, userPwd, autoCheck)
         if Utils.check(result, msg):
             return result, msg
         return False, '登录失败'
 
     @loginLogic
-    def _login(self, userName, userPwd, autoCheck=2, type=TYPE_LOGIN_NORMAL_WAY):
-        if type == TYPE_LOGIN_OTHER_WAY:
-            self._urlInfo = loginUrls['other']
-            return self._loginAsyncSuggest(userName, userPwd,autoCheck, type)
-        self._urlInfo = loginUrls['normal']
-        return self._loginNormal(userName, userPwd,autoCheck, type)
+    def _login(self, userName, userPwd, autoCheck=2):
+        return self._loginNormal(userName, userPwd,autoCheck)
 
-    def _loginNormal(self, userName, userPwd, autoCheck=2,type=TYPE_LOGIN_NORMAL_WAY):
-        status,msg = self._login_init()
-        if not status:
-            return status, msg
-        self._uamtk_static()
+    def _loginNormal(self, userName, userPwd, autoCheck=2):
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
             results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            results, verify = Captcha().verifyCaptchaByHand(type=type)
+            results, verify = Captcha().verifyCaptchaByHand()
         else:
-            results, verify = Captcha().verifyCodeAutoByMyself(type=type)
+            results, verify = Captcha().verifyCodeAutoByMyself()
 
         if not verify:
             return False, '验证码识别错误!'
@@ -138,32 +125,6 @@ class Login(object):
         if not Utils.check(result, msg):
             return False, 'uamtk failed'
         return self._uamauthclient(apptk)
-
-    def _loginAsyncSuggest(self, userName, userPwd, autoCheck=2,type=TYPE_LOGIN_OTHER_WAY):
-        self._init()
-        if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
-            results, verify = Captcha().verifyCodeAuto()
-        elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
-            results, verify = Captcha().verifyCaptchaByHand(type=type)
-        else:
-            results, verify = Captcha().verifyCodeAutoByMyself(type=type)
-        if not verify:
-            return False, '验证码识别错误!'
-        Log.v('验证码识别成功')
-        formData = OrderedDict()
-        formData['loginUserDTO.user_name'] = userName
-        formData['userDTO.password'] = userPwd
-        formData['randCode'] = results
-
-        jsonRet = EasyHttp.send(self._urlInfo['login'], data=formData)
-        # print('loginAsyncSuggest: %s' % jsonRet)
-
-        def isSuccess(response):
-            return response['status'] and response['data'].get('loginCheck') == 'Y' if 'data' in response else False, \
-                   response['data'].get('otherMsg') if 'data' in response else response['messages']
-
-        loginSuccess, otherMsg = isSuccess(jsonRet)
-        return loginSuccess, '%s:%s' % (userName, '登录成功' if loginSuccess else '登录失败')
 
     def isLogin(self):
         formData = {

@@ -59,11 +59,9 @@ loginUrls = {
             'response': 'binary',
             'Referer': r'https://kyfw.12306.cn/otn/resources/login.html',
         },
-        "loginCaptchaCode": {  # 登录验证码
-                "req_url": "/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&{0}&callback=jQuery19108016482864806321_1554298927290&_=1554298927293".format(random.random()),
-                "req_type": "get",
-                "Referer": "https://kyfw.12306.cn/otn/resources/login.html",
-                "Host": "kyfw.12306.cn",
+        "loginCaptchaCode": {
+                "url": "https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&{0}".format(int(time.time() * 1000)),
+                "method": "get"
             },
         'captchaCheck': {
             'url': r'https://kyfw.12306.cn/passport/captcha/captcha-check',
@@ -127,7 +125,7 @@ loginUrls = {
             'response': 'html',
         },
         "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=SVHBuOPJ2a&hashCode=_47u274X8sig9sXD01erzWiHjKrEWJFtxUyz2gOdmQE&FMQw=1&q4f3=zh-CN&VySQ=FGHa4_WbpsBCD8V9viCXQAfNNRL44Rph&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
+            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=N27UATYlTj&hashCode=i9Y9x882LNkPOM_uT8DWVUw68WR5AdNTy_9Q5wGigIA&FMQw=1&q4f3=zh-CN&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
             # "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice",
             "method": "GET",
             'response': 'html',
@@ -146,84 +144,7 @@ loginUrls = {
             'Host': 'kyfw.12306.cn',
             }
         }
-    },
-    # --------------------------------------------------------------------------------------------------------
-    'other': {
-        'init': {
-            'url': r'https://kyfw.12306.cn/otn/login/init',
-            'method': 'GET',
-            'headers': {
-                'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                r'Content-Type': r'application/x-www-form-urlencoded',
-                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
-            },
-            'response': 'html',
-        },'loginInit': {
-            'url': r'https://kyfw.12306.cn/otn/resources/login.html',
-            'method': 'GET',
-            'headers': {
-                'Accept': r'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Referer': r'https://www.12306.cn/index/',
-            },
-            'response': 'html',
-        },
-        'uamtk': {
-            'url': r'https://kyfw.12306.cn/passport/web/auth/uamtk',
-            'method': 'POST',
-            'headers': {
-                r'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
-                'Referer': r'https://kyfw.12306.cn/otn/passport?redirect=/otn/login/userLogin',
-            }
-        },'uamtk-static':{
-            'url': r'https://kyfw.12306.cn/passport/web/auth/uamtk-static',
-            'method': 'POST',
-            'headers': {
-                r'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
-                'Referer': r'https://kyfw.12306.cn/otn/resources/login.html',
-            }
-        },
-        'captcha': {
-            'url': r'https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&rand=sjrand&{}'
-                .format(random.random()),
-            'method': 'GET',
-            'response': 'binary',
-        },
-        'captchaCheck': {
-            'url': r'https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn',
-            'method': 'POST',
-            'headers': {
-                'Origin': r'https://kyfw.12306.cn',
-                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
-                'Content-Type': r'application/x-www-form-urlencoded; charset=UTF-8',
-            }
-        },
-        'login': {
-            'url': r'https://kyfw.12306.cn/otn/login/loginAysnSuggest',
-            'method': 'POST',
-            'headers': {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-                'Origin': r'https://kyfw.12306.cn',
-                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
-            }
-        },
-        'loginOut': {
-            'url': r'https://kyfw.12306.cn/otn/login/loginOut',
-            'method': 'GET',
-            'headers': {
-                r'Content-Type': r'application/x-www-form-urlencoded',
-                'Host': r'kyfw.12306.cn',
-                'Referer': r'https://kyfw.12306.cn/otn/leftTicket/init',
-            },
-            'response': 'html',
-        },
-        "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=SVHBuOPJ2a&hashCode=_47u274X8sig9sXD01erzWiHjKrEWJFtxUyz2gOdmQE&FMQw=1&q4f3=zh-CN&VySQ=FGHa4_WbpsBCD8V9viCXQAfNNRL44Rph&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/75.0.3770.142%20Safari/537.36&E3gR=7484b4d443309cac29a8c080495fc1c0&timestamp=",
-            "method": "GET",
-            "Referer": "https://kyfw.12306.cn/otn/passport?redirect=/otn/",
-            "Host": "kyfw.12306.cn",
-            'response': 'html'
-        }
-    },
+    }
 }
 
 autoVerifyUrls = {

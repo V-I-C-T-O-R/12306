@@ -135,10 +135,18 @@ class EasyHttp(object):
     @sendLogic
     def get(url,timeout):
         try:
-            response = EasyHttp.__session.request(method='GET',
-                                                  url=url,
-                                                  timeout=timeout,
-                                                  allow_redirects=False)
+            if len(ips) == 0:
+                response = EasyHttp.__session.request(method='GET',
+                                                      url=url,
+                                                      timeout=timeout,
+                                                      allow_redirects=False)
+            else:
+                proxy_address = random.choice(ips)
+                response = EasyHttp.__session.request(method='GET',
+                                                      url=url,
+                                                      proxies={"http": "http://{}".format(proxy_address[0])},
+                                                      timeout=timeout,
+                                                      allow_redirects=False)
             if response.status_code == requests.codes.ok:
                 return response.text
         except Exception as e:
@@ -149,12 +157,23 @@ class EasyHttp(object):
     @sendLogic
     def get_custom(urlInfo):
         try:
-            response = EasyHttp.__session.request(method=urlInfo['method'],
+            if len(ips) == 0:
+                response = EasyHttp.__session.request(method=urlInfo['method'],
                                                       url=urlInfo['url'],
                                                       timeout=3,
                                                       allow_redirects=False
-                                                    )
+                                                      )
+            else:
+                proxy_address = random.choice(ips)
+                response = EasyHttp.__session.request(method=urlInfo['method'],
+                                                      url=urlInfo['url'],
+                                                      proxies={"http": "http://{}".format(proxy_address[0])},
+                                                      timeout=3,
+                                                      allow_redirects=False
+                                                      )
         except Exception as e:
+            if ips:
+                ips.remove(proxy_address)
             return None
         return response
 
