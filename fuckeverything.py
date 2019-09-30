@@ -30,23 +30,6 @@ def do_login():
     Log.v('%s,登录成功' % msg)
     return True,login
 
-def check_login():
-    response = EasyHttp.post_custom(loginUrls['normal']['conf'])
-    if not response or not response.json():
-        Log.d('登录状态检查失败,重新请求')
-        status, login = do_login()
-        if not status:
-            return False
-    resp = response.json()
-    login_status = resp.get('data').get('is_login')
-    Log.d('登录状态：%s' % login_status)
-    if 'Y' != login_status:
-        Log.d('登录状态已过期,重新请求')
-        status, login = do_login()
-        if not status:
-            return False
-    return True
-
 def super_hero(love):
     Log.v('启动***超级英雄***线程')
     #免费代理ip访问
@@ -56,28 +39,21 @@ def super_hero(love):
     EasyHttp.load_cookies(COOKIE_SAVE_ADDRESS)
     cookies = {c.name: c.value for c in EasyHttp.get_session().cookies}
 
-    RAIL_EXPIRATION = cookies.get('RAIL_EXPIRATION')
-    #(int(RAIL_EXPIRATION)-172800000) < int(time.time()*1000)
-    if RAIL_EXPIRATION and int(RAIL_EXPIRATION) < int(time.time()*1000) :
-        Log.d('cookie登录已过期,重新请求')
+    if 'uamtk' not in cookies or 'RAIL_DEVICEID' not in cookies:
         status,login = do_login()
         if not status:
             love.change_offline_status(True)
             return
     else:
-        if not ('uamtk' in cookies and 'RAIL_DEVICEID' in cookies):
-            status,login = do_login()
+        status,_ = check_re_login()
+        if not status:
+            status, login = do_login()
             if not status:
                 love.change_offline_status(True)
                 return
-        else:
-            status = check_login()
-            if not status:
-                love.change_offline_status(True)
-                return
-            login = Login()
-            login._urlInfo = loginUrls['normal']
-            Log.v('已登录状态,开始寻找小票票')
+        login = Login()
+        login._urlInfo = loginUrls['normal']
+        Log.v('已登录状态,开始寻找小票票')
 
     love.change_login_status(True)
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
@@ -118,15 +94,6 @@ def super_hero(love):
             ticketDetails.tourFlag = TOUR_FLAG if TOUR_FLAG else 'dc'
             submit = Submit(ticketDetails)
             seats_default = copy.deepcopy(CHOOSE_SEATS)
-            if (ticketDetails.seatType == SEAT_TYPE[SeatName.FIRST_CLASS_SEAT] or ticketDetails.seatType == SEAT_TYPE[SeatName.SECOND_CLASS_SEAT]) and not seats_default:
-                results_seat = []
-                for i in range(len(PASSENGERS_ID)):
-                    random_seat = random.choice(NUM_SEAT)+random.choice(LETTER_SEAT)
-                    if random_seat in results_seat:
-                        continue
-                    results_seat.append(random_seat)
-                seats_default.extend(results_seat)
-
             if submit.submit(seats_default):
                 status, contents = submit.showSubmitInfoPretty()
                 if status:
