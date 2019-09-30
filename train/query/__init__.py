@@ -21,8 +21,6 @@ def check_login_magic(func):
 def check_re_login():
     try:
         response = EasyHttp.post_custom(loginUrls['normal']['conf'])
-        if not response or not response.json():
-            return False
         resp = response.json()
         login_status = resp.get('data').get('is_login')
         # Log.d('登录状态：%s' % login_status)
