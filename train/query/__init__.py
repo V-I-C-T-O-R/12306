@@ -50,6 +50,7 @@ def check_user_login():
     }
     jsonRet = EasyHttp.send(loginUrls['normal']['checkUser'],data=formData)
     try:
-        return (True,'登录状态有效') if jsonRet['data']['flag'] else (False,'登录状态失效')
+        status = jsonRet['data']['flag']
+        return (True,'登录状态有效') if status else (False,'登录状态失效')
     except Exception as e:
         return False,'登录状态失效'

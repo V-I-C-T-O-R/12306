@@ -361,31 +361,34 @@ class Submit(object):
         Log.v('正在排队获取订单!')
         count = 0
         while True:
-            count += 1
-            status, msg, waitTime, orderId, errorMsg = self._queryOrderWaitTime()
-            if not Utils.check(status, 'queryOrderWaitTime: %s' % msg):
-                return None
-            Log.v('[%d]正在等待订单提交结果...' % count)
-            if waitTime < 0:
-                if orderId:
-                    Log.v('订单提交成功，订单号: %s' % orderId)
-                    return orderId
-                elif errorMsg:
-                    Log.e(errorMsg)
-                    time.sleep(3)
+            try:
+                count += 1
+                status, msg, waitTime, orderId, errorMsg = self._queryOrderWaitTime()
+                if not Utils.check(status, 'queryOrderWaitTime: %s' % msg):
                     return None
+                Log.v('[%d]正在等待订单提交结果...' % count)
+                if waitTime < 0:
+                    if orderId:
+                        Log.v('订单提交成功，订单号: %s' % orderId)
+                        return orderId
+                    elif errorMsg:
+                        Log.e(errorMsg)
+                        time.sleep(3)
+                        return False
+                    else:
+                        time.sleep(3)
+                        continue
+                interval = waitTime / 60
+                Log.w('未出票，订单排队中...预估等待时间: %s 分钟' % (interval if interval <= 30 else '超过30'))
+                if interval > 30:
+                    time.sleep(60)
+                elif interval > 20:
+                    time.sleep(30)
+                elif interval > 10:
+                    time.sleep(10)
                 else:
                     time.sleep(3)
-                    continue
-            interval = waitTime // 60
-            Log.w('未出票，订单排队中...预估等待时间: %s 分钟' % (interval if interval <= 30 else '超过30'))
-            if interval > 30:
-                time.sleep(60)
-            elif interval > 20:
-                time.sleep(30)
-            elif interval > 10:
-                time.sleep(10)
-            else:
+            except Exception as e:
                 time.sleep(3)
+                continue
 
-        return None

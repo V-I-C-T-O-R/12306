@@ -47,7 +47,7 @@ class Captcha(object):
 
         def verify(response):
             return Captcha.__REPONSE_NORMAL_CDOE_SUCCESSFUL == response[
-                'result_code'] if 'result_code' in response else False
+                'result_code'] if response and 'result_code' in response else False
 
         return verify(jsonRet)
 
@@ -160,7 +160,7 @@ class Captcha(object):
 
         except Exception as e:
             return None, False
-        return results, self._captchaAutoCheck(results)
+        return results, self.check(results)
 
     #对应自动验证验证码操作
     def _captchaAutoCheck(self, results):

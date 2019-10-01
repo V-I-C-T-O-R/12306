@@ -16,7 +16,7 @@ from utils.Log import Log
 from utils.email_tool import send_mail
 from utils.sms import send_sms
 
-def do_login():
+def do_login(love):
     EasyHttp.removeCookies()
     login = Login()
     Log.v('正在登录...')
@@ -25,6 +25,7 @@ def do_login():
     if not Utils.check(result, msg):
         return False,login
     Log.v('%s,登录成功' % msg)
+    love.change_login_status(True)
     return True,login
 
 def super_hero(love):
@@ -37,21 +38,20 @@ def super_hero(love):
     cookies = {c.name: c.value for c in EasyHttp.get_session().cookies}
 
     if 'uamtk' not in cookies or 'RAIL_DEVICEID' not in cookies:
-        status,login = do_login()
+        status,login = do_login(love)
         if not status:
             love.change_offline_status(True)
             return
     else:
         status,_ = check_user_login()
         if not status:
-            status, login = do_login()
+            status, login = do_login(love)
             if not status:
                 love.change_offline_status(True)
                 return
 
         Log.v('已登录状态,开始寻找小票票')
 
-    love.change_login_status(True)
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
     Log.d("订单详情:日期[%s]/区间[%s至%s]%s/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,'/出发时间段['+'~'.join(leave_time)+']' if leave_time else '',','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
@@ -70,13 +70,14 @@ def super_hero(love):
                                             TrainUtils.passengerType2Desc(passengerTypeCode),
                                             TRAINS_NO,
                                             seatTypesCode, PASSENGERS_ID,leave_time, POLICY_BILL, QUERY_TICKET_REFERSH_INTERVAL)
-            status,_ = check_user_login()
+            status = love.get_login_status()
+            # status,_ = check_user_login()
             if not status:
                 #非登录状态有票,仅支持自动登录或第三方AI自动登录
                 if SELECT_AUTO_CHECK_CAPTHCA == CAPTCHA_CHECK_METHOD_HAND:
                     Log.e("手动模式登录状态已过期,请手动重试...")
 
-                status, login = do_login()
+                status, login = do_login(love)
                 if not status:
                     Log.e("登录状态已过期,重试登录失败")
                     love.change_offline_status(True)
@@ -122,6 +123,8 @@ def girl_of_the_night(love):
             status,_ = check_user_login()
             if status:
                 EasyHttp.save_cookies(COOKIE_SAVE_ADDRESS)
+            else:
+                love.change_login_status(False)
         time.sleep(HEART_BEAT_PER_REQUEST_TIME)
 
     Log.v('****** 12306 终止 ******')
