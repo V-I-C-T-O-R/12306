@@ -60,6 +60,7 @@
 效果图如下：
 买票  
 ![12306-1](https://github.com/V-I-C-T-O-R/12306/blob/master/1.png)
+![12306-2](https://github.com/V-I-C-T-O-R/12306/blob/master/2.png)
 
 短信  
 ![sms](https://github.com/V-I-C-T-O-R/12306/blob/master/3.jpg)

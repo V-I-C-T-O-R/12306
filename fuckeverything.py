@@ -54,7 +54,7 @@ def super_hero(love):
 
     seatTypesCode = SEAT_TYPE_CODE if SEAT_TYPE_CODE else [SEAT_TYPE[key] for key in SEAT_TYPE.keys()]
     passengerTypeCode = PASSENGER_TYPE_CODE if PASSENGER_TYPE_CODE else '1'
-    Log.d("订单详情:日期[%s]/区间[%s至%s]%s/车次[%s]/刷票间隔[%ss]"%(TRAIN_DATE,FROM_STATION,TO_STATION,'/出发时间段['+'~'.join(leave_time)+']' if leave_time else '',','.join(TRAINS_NO),QUERY_TICKET_REFERSH_INTERVAL))
+    Log.d("订单详情:日期[%s]/区间[%s至%s]%s%s/刷票间隔[%ss]"%(','.join(TRAIN_DATE),FROM_STATION,TO_STATION,'/出发时间段['+'~'.join(leave_time)+']' if leave_time else '','/车次['+','.join(TRAINS_NO)+']' if TRAINS_NO else '',QUERY_TICKET_REFERSH_INTERVAL))
     count = 0
     while True:
         try:
