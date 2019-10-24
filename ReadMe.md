@@ -19,7 +19,8 @@
  * IP池策略
  * 识别验证码策略
 
-3. 执行[funckeverything.py](https://github.com/V-I-C-T-O-R/12306/blob/master/fuckeverything.py)。
+3. 执行[funckeverything.py](https://github.com/V-I-C-T-O-R/12306/blob/master/fuckeverything.py)
+###### (ps:如果有登录验证失败次数过多,可以尝试自己抓deviceId Url来更新urls_conf.py文件中的url)
 
 #### Notice
 * 鉴于本工具就是个工具，直接再做一个CNN类的训练服务不大实际(穷->服务器<=0)，所以就折中选择了免费服务自己捣鼓，希望对其他人会有启发
