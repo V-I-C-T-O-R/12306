@@ -320,8 +320,9 @@ class Submit(object):
 
     def showSubmitInfoPretty(self):
         status, msg, jsonTicketInfo = self._queryMyOrderNoComplete()
-        if not Utils.check(status, msg):
-            return False,msg
+
+        if not Utils.check(status, msg if msg else '获取车票详情信息异常，详情请前往12306官网查看'):
+            return status,msg
         from prettytable import PrettyTable
         table = PrettyTable()
         try:
