@@ -57,6 +57,7 @@ THREAD_OR_PROCESS = True
 
 mail_host = 'smtp.qq.com'
 mail_user = '******@qq.com'
+#qq邮箱授权码,获取步骤见网址https://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256
 mail_pass = '******'
 mailto_list = ['example@163.com']
 
