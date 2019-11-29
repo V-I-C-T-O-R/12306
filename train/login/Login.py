@@ -77,7 +77,7 @@ class Login(object):
         return isSuccess(jsonRet), '%s:%s' % (jsonRet['username'], jsonRet['result_message']) if jsonRet \
             else 'uamauthclient failed'
 
-    def login(self, userName, userPwd, autoCheck=2):
+    def login(self, userName, userPwd, autoCheck=1):
         self._urlInfo = loginUrls['normal']
         status, msg = self._login_init()
         if not status:
@@ -90,10 +90,10 @@ class Login(object):
         return False, '登录失败'
 
     @loginLogic
-    def _login(self, userName, userPwd, autoCheck=2):
+    def _login(self, userName, userPwd, autoCheck=1):
         return self._loginNormal(userName, userPwd,autoCheck)
 
-    def _loginNormal(self, userName, userPwd, autoCheck=2):
+    def _loginNormal(self, userName, userPwd, autoCheck=1):
         if autoCheck == CAPTCHA_CHECK_METHOD_THREE:
             results, verify = Captcha().verifyCodeAuto()
         elif autoCheck == CAPTCHA_CHECK_METHOD_HAND:
@@ -138,35 +138,39 @@ class Login(object):
         EasyHttp.send(self._urlInfo['init'])
 
     def _login_init(self):
-        status,cookie = get12306Cookie()
+        return self._handle_device_code_manual()
+
+    def _handle_device_code_auto(self):
+        status, cookie = get12306Cookie()
         if not status:
-            return False,cookie
+            return False, cookie
         EasyHttp.setCookies(RAIL_DEVICEID=cookie['RAIL_DEVICEID'], RAIL_EXPIRATION=cookie['RAIL_EXPIRATION'])
         return True, '获取设备指纹成功'
-        #
-        # #死方法来手动每次更新deviceid url
-        # url_info = copy.deepcopy(self._urlInfo["getDevicesId"])
-        # url_info['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
-        # devices_id_rsp = EasyHttp.get_custom(url_info)
-        #
-        # # params = {"algID": request_alg_id(self._urlInfo['getJS']), "timestamp": int(time.time() * 1000)}
-        # # params = dict(params, **get_hash_code_params())
-        # # devices_id_rsp = EasyHttp.send(self._urlInfo["getDevicesId"],params=params)
-        # if devices_id_rsp:
-        #     callback = devices_id_rsp.text[18:-2]
-        #     # callback = devices_id_rsp.replace("callbackFunction('", '').replace("')", '')
-        #     try:
-        #         text = json.loads(callback)
-        #         devices_id = text.get('dfp')
-        #         exp = text.get('exp')
-        #     except Exception as e:
-        #         return False,'获取设备指纹失败'
-        #     EasyHttp.setCookies(RAIL_DEVICEID=devices_id, RAIL_EXPIRATION=exp)
-        #     # Log.d('设备Id：%s'%devices_id)
-        #     return True, '获取设备指纹成功'
-        # EasyHttp.send(self._urlInfo['index'])
-        # EasyHttp.send(self._urlInfo['loginInit'])
-        # return False,'获取设备指纹失败'
+
+    def _handle_device_code_manual(self):
+        #死方法来手动每次更新deviceid url
+        url_info = copy.deepcopy(self._urlInfo["getDevicesId"])
+        url_info['url'] = self._urlInfo["getDevicesId"]['url'] + str(int(time.time()*1000))
+        devices_id_rsp = EasyHttp.get_custom(url_info)
+
+        # params = {"algID": request_alg_id(self._urlInfo['getJS']), "timestamp": int(time.time() * 1000)}
+        # params = dict(params, **get_hash_code_params())
+        # devices_id_rsp = EasyHttp.send(self._urlInfo["getDevicesId"],params=params)
+        if devices_id_rsp:
+            callback = devices_id_rsp.text[18:-2]
+            # callback = devices_id_rsp.replace("callbackFunction('", '').replace("')", '')
+            try:
+                text = json.loads(callback)
+                devices_id = text.get('dfp')
+                exp = text.get('exp')
+            except Exception as e:
+                return False,'获取设备指纹失败'
+            EasyHttp.setCookies(RAIL_DEVICEID=devices_id, RAIL_EXPIRATION=exp)
+            # Log.d('设备Id：%s'%devices_id)
+            return True, '获取设备指纹成功'
+        EasyHttp.send(self._urlInfo['index'])
+        EasyHttp.send(self._urlInfo['loginInit'])
+        return False,'获取设备指纹失败'
 
 
 if __name__ == '__main__':
