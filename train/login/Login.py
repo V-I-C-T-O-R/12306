@@ -138,8 +138,9 @@ class Login(object):
         EasyHttp.send(self._urlInfo['init'])
 
     def _login_init(self):
-        cookie = get12306Cookie()
-        print('cookie=' + json.dumps(cookie))
+        status,cookie = get12306Cookie()
+        if not status:
+            return False,cookie
         EasyHttp.setCookies(RAIL_DEVICEID=cookie['RAIL_DEVICEID'], RAIL_EXPIRATION=cookie['RAIL_EXPIRATION'])
         return True, '获取设备指纹成功'
         #

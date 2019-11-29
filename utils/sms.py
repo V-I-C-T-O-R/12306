@@ -1,11 +1,16 @@
 from twilio.rest import Client
 
 def send_sms(account_sid,auth_token,from_man,to_man,msg):
-    client = Client(account_sid, auth_token)
-    message = client.messages.create(
-        to=to_man,
-        from_=from_man,
-        body=msg)
+    try:
+        client = Client(account_sid, auth_token)
+        message = client.messages.create(
+            to=to_man,
+            from_=from_man,
+            body=msg)
+        if not message:
+            return None
+    except Exception as e:
+        return None
     return message.sid
 
 if __name__ == '__main__':
