@@ -134,7 +134,7 @@ loginUrls = {
             'response': 'html',
         },
         "getDevicesId": {  # 获取用户信息
-            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=x4ATlE88y4&hashCode=Q_6CL5Sz4xM0mmlrDZRFwG2CY8gm8MVdzO-s0E6z-zo&FMQw=1&q4f3=zh-CN&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232261143&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/78.0.3904.108%20Safari/537.36&E3gR=0dac2f201d820fd9f9b011fac6d185bc&timestamp=",
+            "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice?algID=Ce1Nl701NB&hashCode=9Bn9whdYFFu7PWFsZ45F072cZnxabCuv97MG2NTHzII&FMQw=1&q4f3=zh-CN&VySQ=FGHuGX3KjxN9d-kr_XGUictai0QJ8dGI&VPIf=1&custID=133&VEek=unknown&dzuS=0&yD16=0&EOQP=382b3eb7cfc5d30f1b59cb283d1acaf3&lEnu=3232235885&jp76=52d67b2a5aa5e031084733d5006cc664&hAqN=Linux%20x86_64&platform=WEB&ks0Q=d22ca0b81584fbea62237b14bd04c866&TeRS=1003x1920&tOHY=24xx1080x1920&Fvje=i1l1o1s1&q5aJ=-8&wNLf=99115dfb07133750ba677d055874de87&0aew=Mozilla/5.0%20(X11;%20Linux%20x86_64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/78.0.3904.108%20Safari/537.36&E3gR=0dac2f201d820fd9f9b011fac6d185bc&timestamp=",
             # "url": "https://kyfw.12306.cn/otn/HttpZF/logdevice",
             "method": "GET",
             'response': 'html',
