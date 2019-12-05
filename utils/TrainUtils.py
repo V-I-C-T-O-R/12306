@@ -114,8 +114,8 @@ def submitPassengerInfo(ticketIndex, jsonTicketInfo, orderDBListIndex=0):
 def submitTicketCostInfo(ticketIndex, jsonTicketInfo, orderDBListIndex=0):
     return '%s%s元' % (
         jsonTicketInfo['orderDBList'][orderDBListIndex]['tickets'][ticketIndex]['ticket_type_name'],
-        Fore.YELLOW + jsonTicketInfo['orderDBList'][orderDBListIndex]['tickets'][ticketIndex][
-            'str_ticket_price_page'] + Fore.RESET,
+        jsonTicketInfo['orderDBList'][orderDBListIndex]['tickets'][ticketIndex][
+            'str_ticket_price_page'],
     )
 
 
