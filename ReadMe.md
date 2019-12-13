@@ -32,7 +32,6 @@
 * IP池和登录方式酌情修改
 * 有坑必踩，都是为了回家
 * 配置详情请关注configure.py文件
-* 交流房间[Gitter](https://gitter.im/vfbe/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 #### 新功能
 * 新增自动url变更请求
