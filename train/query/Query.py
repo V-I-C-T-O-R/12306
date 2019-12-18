@@ -164,6 +164,8 @@ class Query(object):
                   seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], PASSENGERS_ID=[],leave_period=[], POLICY_BILL=1):
         for custom_date in trainDate:
             for ticket in Query.query(flag, base_url, custom_date, fromStation, toStation, passengerType):
+                if '售' in ticket.mark:
+                    continue
                 # filter trainNo
                 if not TrainUtils.filterTrain(ticket, trainsNo):
                     continue
