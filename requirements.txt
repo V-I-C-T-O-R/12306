@@ -16,7 +16,7 @@ multiprocess==0.70.6.1
 networkx==2.2
 numpy==1.16.0
 opencv-python==4.0.0.21
-Pillow==5.4.1
+Pillow==8.2.0
 prettytable==0.7.2
 PyJWT==1.7.1
 pyparsing==2.3.1
