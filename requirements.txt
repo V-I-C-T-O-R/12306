@@ -15,7 +15,7 @@ matplotlib==3.0.2
 multiprocess==0.70.6.1
 networkx==2.2
 numpy==1.16.0
-opencv-python==4.0.0.21
+opencv-python==4.1.1.26
 Pillow==5.4.1
 prettytable==0.7.2
 PyJWT==1.7.1
