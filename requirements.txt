@@ -5,7 +5,7 @@ chardet==3.0.4
 cloudpickle==0.6.1
 colorama==0.4.1
 cycler==0.10.0
-dask==1.0.0
+dask==2021.10.0
 decorator==4.3.0
 dill==0.2.8.2
 idna==2.8
