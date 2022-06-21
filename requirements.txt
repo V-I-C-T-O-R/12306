@@ -14,7 +14,7 @@ lxml==4.3.0
 matplotlib==3.0.2
 multiprocess==0.70.6.1
 networkx==2.2
-numpy==1.16.0
+numpy==1.22.0
 opencv-python==4.0.0.21
 Pillow==5.4.1
 prettytable==0.7.2
