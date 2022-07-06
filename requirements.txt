@@ -10,7 +10,7 @@ decorator==4.3.0
 dill==0.2.8.2
 idna==2.8
 kiwisolver==1.0.1
-lxml==4.3.0
+lxml==4.9.1
 matplotlib==3.0.2
 multiprocess==0.70.6.1
 networkx==2.2
